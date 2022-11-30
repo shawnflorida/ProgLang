@@ -1,0 +1,14 @@
+git techniques:
+
+
+git init
+//add README.TXT
+git add README.txt
+//first commit
+git commit -m "first commit"
+// add to branch -M main
+git remote add origin https://github.com/Lawrence-Kraft/ProgLang.git
+//finalize
+git push -u origin main
+//add all if necessary
+git add .
