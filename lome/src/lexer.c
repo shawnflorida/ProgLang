@@ -22,12 +22,12 @@ lexer_t *init_lexer(char *contents)
     return lexer;
 }
 
-void lexer_advance(lexer_t* lexer)
+void lexer_advance(lexer_t *lexer)
 {
 
     // if the current character is equal to null space and less than the len of contents,
     // add 1 to index and character should be equal to lexer's content indexed by the current lexer
-    if (lexer->c = '\0' && lexer->i < strlen(lexer->contents))
+    if (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
         lexer->i += 1;
         lexer->c = lexer->contents[lexer->i];
@@ -55,10 +55,8 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         {
             lexer_skip_whitespace(lexer);
         }
-        printf("hello skip whitespace");
         if (isalnum(lexer->c))
         {
-            printf("%c lexer=>c\n", lexer->c);
             return lexer_collect_id(lexer);
         };
 
@@ -73,16 +71,16 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         // add its parameter the current lexer instance, and the result
         // of init_token if we inputted TOKEN_EQUALS, and the current lexer character as a string.
         case '=':
-            lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer)));
             break;
         case ';':
-            lexer_advance_with_token(lexer, init_token(TOKEN_SEMI, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_SEMI, lexer_get_current_char_as_string(lexer)));
             break;
         case '(':
-            lexer_advance_with_token(lexer, init_token(TOKEN_LPAREN, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LPAREN, lexer_get_current_char_as_string(lexer)));
             break;
         case ')':
-            lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer)));
             break;
         }
     }
@@ -105,7 +103,6 @@ token_t *lexer_collect_string(lexer_t *lexer)
         strcat(value, s); // append the current character to value string.
         lexer_advance(lexer);
     }
-    // advance the token.
     lexer_advance(lexer);
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
     return init_token(TOKEN_STRING, value);
@@ -113,23 +110,19 @@ token_t *lexer_collect_string(lexer_t *lexer)
 
 token_t *lexer_collect_id(lexer_t *lexer)
 {
-    printf("%c\n", lexer->c);
-    lexer_advance(lexer);
-    printf("%c\n", lexer->c);
     // value is the allocation of the memory for a string
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
     while (isalnum(lexer->c))
     {
-        printf("%c\n", lexer->c);
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
         strcat(value, s); // append the current character to value string.
+        lexer_advance(lexer);
     }
     // advance the token.
-    // lexer_advance(lexer);
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
     return init_token(TOKEN_ID, value);
 }

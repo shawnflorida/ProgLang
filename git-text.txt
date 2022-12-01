@@ -12,3 +12,10 @@ git remote add origin https://github.com/Lawrence-Kraft/ProgLang.git
 git push -u origin main
 //add all if necessary
 git add .
+
+
+//Updating
+git add .
+git commit -m "first commit"
+git push -u origin main
+

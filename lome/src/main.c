@@ -4,8 +4,8 @@ int main(int argc, char **argv[]){
 
   
     lexer_t* lexer = init_lexer(
-        "linya pangalan = \"shawn michael florida\";\n"
-        "lahad(pangalan);\n"
+        "linya pangalan = \"shawn michael florida\";"
+        "lahad(pangalan);"
 
     );
 
