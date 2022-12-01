@@ -17,13 +17,9 @@ $(exec): $(objects)
 install:
 	make
 	cp ./lome.exe/usr/local/bin/new
-
-
-
 #clean command
 clean:
 	-rm *.exe
-	-rm *.objects
+	-rm *.o
 	-rm src/*.o
 
-i
