@@ -19,3 +19,13 @@ git add .
 git commit -m "first commit"
 git push -u origin main
 
+//remove
+git rm name removes the file from the repo but also deletes it from the local file system.
+
+To remove the file from the repo and not delete it from the local file system use:
+git rm --cached name
+
+$ git checkout <existing_branch>
+$ git checkout -b <new_branch>
+$ git switch <existing_branch>
+$ git switch -c <non_existing_branch>
