@@ -12,6 +12,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas rutrum imperdi
 
 ## Contributors:
 | Name                              | Role                              |
+|-----------------------------------|-----------------------------------|
 | Cruz, Denise Paula                |                                   |
 | Fangonilo, Patricia Ysabel D.     |                                   |
 | Mana-ay, Shawn Michael F.         |                                   |
