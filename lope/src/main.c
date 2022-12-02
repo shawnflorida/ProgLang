@@ -15,7 +15,10 @@ int main(int argc, char **argv)
     {
         lexer = init_lexer(
             "linya pangalan = \"shawn michael florida\";"
-            "lahad(pangalan);");
+            "lahad(pangalan);"
+            "numero number = 1;");
+
+        // numero a = 1;
         scanFile(lexer);
     }
     return 0;
