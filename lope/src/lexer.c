@@ -53,6 +53,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     {
         if (lexer->c == ' ' || lexer->c == 10)
         {
+            printf("nl");
             lexer_skip_whitespace(lexer);
         }
         if (isalnum(lexer->c))
