@@ -1,5 +1,5 @@
 #executable
-exec = lome.exe
+exec = lope.exe
 #finding sources of makefile in src folder with extence .c
 sources = $(wildcard src/*.c)
 #conpile into executable
@@ -16,7 +16,7 @@ $(exec): $(objects)
 
 install:
 	make
-	cp ./lome.exe/usr/local/bin/new
+	cp ./lope.exe/usr/local/bin/new
 #clean command
 clean:
 	-rm *.exe
