@@ -16,9 +16,6 @@ lexer_t *init_lexer(char *contents)
     lexer->i = 0;
     // current character
     lexer->c = contents[lexer->i];
-
-    printf("this is contents: %s\n", contents);
-
     return lexer;
 }
 
@@ -53,7 +50,6 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     {
         if (lexer->c == ' ' || lexer->c == 10)
         {
-            printf("nl");
             lexer_skip_whitespace(lexer);
         }
         if (isalnum(lexer->c))
@@ -66,6 +62,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         {
             return lexer_collect_string(lexer);
         }
+
         switch (lexer->c)
         {
         // if the case is =, call lexer advance while carrying the token,
@@ -82,6 +79,24 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             break;
         case ')':
             return lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '+':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_ADD, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '-':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_SUB, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '/':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_DIV, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '*':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '%':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_MOD, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '^':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_EXP, lexer_get_current_char_as_string(lexer)));
             break;
         }
     }

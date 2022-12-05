@@ -11,7 +11,14 @@ typedef struct TOKEN_STRUCT
         TOKEN_STRING,
         TOKEN_SEMI,
         TOKEN_LPAREN,
-        TOKEN_RPAREN
+        TOKEN_RPAREN,
+        // ADD: other operators
+        TOKEN_ADD,
+        TOKEN_SUB,
+        TOKEN_DIV,
+        TOKEN_MULT,
+        TOKEN_MOD,
+        TOKEN_EXP,
     } type;
 
     char *value;
