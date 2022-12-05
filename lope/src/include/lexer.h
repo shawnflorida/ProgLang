@@ -11,7 +11,7 @@ typedef struct LEXER_STRUCT
 
 } lexer_t;
 
-// this are methods. It takes in a variabel wherein it should be an instance of lexer_t
+// this are methods. It takes in a variable wherein it should be an instance of lexer_t
 lexer_t *init_lexer(char *contents);
 
 // move the pointer into the next character
@@ -33,4 +33,12 @@ token_t *lexer_collect_id(lexer_t *lexer);
 token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token);
 
 char *lexer_get_current_char_as_string(lexer_t *lexer);
+
+
+int scanFile(lexer_t *lexer);
+
+
+
+
+
 #endif
