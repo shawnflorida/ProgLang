@@ -16,9 +16,6 @@ lexer_t *init_lexer(char *contents)
     lexer->i = 0;
     // current character
     lexer->c = contents[lexer->i];
-
-    printf("this is contents: %s\n", contents);
-
     return lexer;
 }
 
