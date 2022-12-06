@@ -25,31 +25,7 @@ int main(int argc, char **argv)
             scanFile(lexer);
         }
     }
+    free(fptr);
+    free(fileContent);
     return 0;
-
-}
-
-
-
-int scanFile(lexer_t *lexer)
-{
-
-    token_t *token = (void *)0;
-    const char *token_type[] = {
-        "Identifier/Value",
-        "Equal Sign",
-        "String",
-        "Semi-Colon",
-        "Left Parenthesis",
-        "Right Parenthesis",
-        "Addition",
-        "Subtraction",
-        "Multiplication",
-        "Division",
-        "Exponent"};
-
-    while ((token = lexer_get_next_token(lexer)) != (void *)0)
-    {
-        printf("TOKEN(%s,%s)\n", token_type[token->type], token->value);
-    }
 }

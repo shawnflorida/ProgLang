@@ -12,3 +12,60 @@ int *find_file()
     fileContent = calloc(fileLen, sizeof(char));
     fread(fileContent, sizeof(char), fileLen, fptr);
 }
+
+int scanFile(lexer_t *lexer)
+{
+
+    token_t *token = (void *)0;
+    const char *token_type[] = {
+        "Identifier/Value",
+        "Equal Sign",
+        "Semi-Colon",
+        "Left Parenthesis",
+        "Right Parenthesis",
+        "Left Bracket",
+        "Right Bracket",
+        "Left Brace",
+        "Right Brace",
+        "Comment",
+        "Addition",
+        "Subtraction",
+        "Division",
+        "Multiplication",
+        "Modulus",
+        "Exponent",
+        "Lesser Than",
+        "Greater Than",
+        "Not",
+        "While",
+        "If",
+        "Else",
+        "Else If",
+        "For",
+        "Function",
+        "Import",
+        "Try",
+        "Except",
+        "Finally",
+        "Break",
+        "Continue",
+        "Return",
+        "And",
+        "Or",
+        "In",
+        "Global",
+        "True",
+        "False",
+        "Num Literal",
+        "String Literal",
+        "None",
+        "Float",
+        "Double",
+        "Character",
+        "Invalid"};
+
+    while ((token = lexer_get_next_token(lexer)) != (void *)0)
+    {
+        printf("TOKEN(%s,%s)\n", token_type[token->type], token->value);
+    }
+}
