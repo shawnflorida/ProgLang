@@ -18,6 +18,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_RBRACE,   // }
         TOKEN_COMMENT,  // #
         /* ADD: other operators */
+
         TOKEN_ADD,     // +
         TOKEN_SUB,     // -
         TOKEN_DIV,     // /
