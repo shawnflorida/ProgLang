@@ -17,7 +17,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_RBRACE,   // }
         TOKEN_COMMENT,  // #
 
-        /* ADD: other operators */
+        /* ADD: operators */
         TOKEN_ADD,     // +
         TOKEN_SUB,     // -
         TOKEN_DIV,     // /
@@ -43,7 +43,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_CONTINUE, // tuloy
         TOKEN_RETURN,   // balik
         TOKEN_AND,      // at
-        TOKEN_OR,       // oo
+        TOKEN_OR,       // o
         TOKEN_IN,       // nasa
         TOKEN_GLOBAL,   // lahat
 

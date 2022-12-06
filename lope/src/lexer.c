@@ -161,8 +161,7 @@ token_t *lexer_collect_id(lexer_t *lexer)
         strcat(value, s); // append the current character to value string.
         lexer_advance(lexer);
     }
-    // advance the token.
-    // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
+    
     if (compare_to_keyword(value, "kung") == 1)
     {
         return init_token(TOKEN_IF, value);
@@ -171,7 +170,71 @@ token_t *lexer_collect_id(lexer_t *lexer)
     {
         return init_token(TOKEN_WHLE, value);
     }
+    else if (compare_to_keyword(value, "sakali") == 1)
+    {
+        return init_token(TOKEN_ELSE, value);
+    }
+    else if (compare_to_keyword(value, "kundi") == 1)
+    {
+        return init_token(TOKEN_ELIF, value);
+    }
+    else if (compare_to_keyword(value, "para") == 1)
+    {
+        return init_token(TOKEN_FOR, value);
+    }
+    else if (compare_to_keyword(value, "dep") == 1)
+    {
+        return init_token(TOKEN_FUNCTION, value);
+    }
+    else if (compare_to_keyword(value, "angkat") == 1)
+    {
+        return init_token(TOKEN_IMPORT, value);
+    }
+    else if (compare_to_keyword(value, "subukan") == 1)
+    {
+        return init_token(TOKEN_TRY, value);
+    }
+    else if (compare_to_keyword(value, "maliban") == 1)
+    {
+        return init_token(TOKEN_EXCEPT, value);
+    }
+    else if (compare_to_keyword(value, "wakas") == 1)
+    {
+        return init_token(TOKEN_FINALLY, value);
+    }
+    else if (compare_to_keyword(value, "tigil") == 1)
+    {
+        return init_token(TOKEN_BREAK, value);
+    }
+    else if (compare_to_keyword(value, "tuloy") == 1)
+    {
+        return init_token(TOKEN_CONTINUE, value);
+    }
+    else if (compare_to_keyword(value, "balik") == 1)
+    {
+        return init_token(TOKEN_RETURN, value);
+    }
+    else if (compare_to_keyword(value, "at") == 1)
+    {
+        return init_token(TOKEN_AND, value);
+    }
+    else if (compare_to_keyword(value, "o") == 1)
+    {
+        return init_token(TOKEN_OR, value);
+    }
+    else if (compare_to_keyword(value, "nasa") == 1)
+    {
+        return init_token(TOKEN_IN, value);
+    }
+    else if (compare_to_keyword(value, "lahat") == 1)
+    {
+        return init_token(TOKEN_GLOBAL, value);
+    }
 
+
+    // advance the token.
+    // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
+    
     return init_token(TOKEN_ID, value);
 }
 
