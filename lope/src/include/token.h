@@ -8,7 +8,6 @@ typedef struct TOKEN_STRUCT
         /* id is identifiers */
         TOKEN_ID,       //[a-zA-Z0-9]
         TOKEN_EQUALS,   // =
-        TOKEN_STRING,   // "[a-!]"
         TOKEN_SEMI,     // ;
         TOKEN_LPAREN,   // (
         TOKEN_RPAREN,   // )
@@ -17,8 +16,9 @@ typedef struct TOKEN_STRUCT
         TOKEN_LBRACE,   // {
         TOKEN_RBRACE,   // }
         TOKEN_COMMENT,  // #
-        /* ADD: other operators */
+        TOKEN_COMMA,    // ,
 
+        /* ADD: other operators */
         TOKEN_ADD,     // +
         TOKEN_SUB,     // -
         TOKEN_DIV,     // /
@@ -28,6 +28,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_LESS,    // <
         TOKEN_GREATER, // >
         TOKEN_NEGATE,  // !
+
         /* ADD: keywords */
         TOKEN_WHLE,     // habang
         TOKEN_IF,       // kung
@@ -42,6 +43,21 @@ typedef struct TOKEN_STRUCT
         TOKEN_BREAK,    // tigil
         TOKEN_CONTINUE, // tuloy
         TOKEN_RETURN,   // balik
+        TOKEN_AND,      // at
+        TOKEN_OR,       // oo
+        TOKEN_IN,       // nasa
+        TOKEN_GLOBAL,   // lahat
+
+        /* ADD: data types*/
+        TOKEN_BOOLT,  // totoo
+        TOKEN_BOOLM,  // mali
+        TOKEN_NUM,    // num literals [0-9]*
+        TOKEN_STRING, // "[a-!]"
+        TOKEN_NULL,   // wala
+        TOKEN_FLOAT,  // punto
+        TOKEN_DBL,    // double
+        TOKEN_CHAR,   // letra
+
         /* unknown token */
         TOKEN_UNKNOWN // invalid
     } type;
