@@ -16,9 +16,6 @@ lexer_t *init_lexer(char *contents)
     lexer->i = 0;
     // current character
     lexer->c = contents[lexer->i];
-
-    printf("this is contents: %s\n", contents);
-
     return lexer;
 }
 
@@ -53,7 +50,6 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     {
         if (lexer->c == ' ' || lexer->c == 10)
         {
-            printf("nl");
             lexer_skip_whitespace(lexer);
         }
         if (isalnum(lexer->c))
@@ -83,6 +79,47 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         case ')':
             return lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer)));
             break;
+        case '{':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_RBRACE, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '}':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LBRACE, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '[':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_RBRACKET, lexer_get_current_char_as_string(lexer)));
+            break;
+        case ']':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LBRACKET, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '<':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '>':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_GREATER, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '+':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_ADD, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '-':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_SUB, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '/':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_DIV, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '*':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '%':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_MOD, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '^':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_EXP, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '!':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_NEGATE, lexer_get_current_char_as_string(lexer)));
+            break;
+        default:
+            return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
         }
     }
     return (void *)0;
@@ -106,6 +143,7 @@ token_t *lexer_collect_string(lexer_t *lexer)
     }
     lexer_advance(lexer);
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
+
     return init_token(TOKEN_STRING, value);
 };
 
@@ -125,6 +163,15 @@ token_t *lexer_collect_id(lexer_t *lexer)
     }
     // advance the token.
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
+    if (compare_to_keyword(value, "kung") == 1)
+    {
+        return init_token(TOKEN_IF, value);
+    }
+    else if (compare_to_keyword(value, "habang") == 1)
+    {
+        return init_token(TOKEN_WHLE, value);
+    }
+
     return init_token(TOKEN_ID, value);
 }
 
@@ -142,3 +189,18 @@ char *lexer_get_current_char_as_string(lexer_t *lexer)
 
     return str;
 };
+
+// temporary way to compare
+int compare_to_keyword(char *identifier, char *keyword)
+{
+    int index;
+    // turns the keyword into a finite state machine, checks character by character
+    for (index = 0; index < strlen(keyword); index++)
+    {
+        if (identifier[index] != keyword[index])
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
