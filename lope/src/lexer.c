@@ -24,7 +24,7 @@ void lexer_advance(lexer_t *lexer)
 
     // if the current character is equal to null space and less than the len of contents,
     // add 1 to index and character should be equal to lexer's content indexed by the current lexer
-    if (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
+    if ((lexer->c != '\0'|| lexer->c != ' ') && lexer->i < strlen(lexer->contents))
     {
         lexer->i += 1;
         lexer->c = lexer->contents[lexer->i];
@@ -34,30 +34,60 @@ void lexer_advance(lexer_t *lexer)
 void lexer_skip_whitespace(lexer_t *lexer)
 {
     // 10 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == ' ' || lexer->c == 10)
+    while (lexer->c == ' ')
     {
         // advance the lexer
         lexer_advance(lexer);
     }
 };
 
+void lexer_skip_new_line(lexer_t *lexer)
+{
+    // 10 is code for new line; meaning while lexer is a space or a new line:
+    while (lexer->c == 10)
+    {
+        // advance the lexer
+        lexer_advance(lexer);
+    }
+};
 token_t *lexer_get_next_token(lexer_t *lexer)
 {
-
     // while lexer is not a null and i is less than the lexer contents; meaning
     // there are tokens that are needed to be parsed.
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
-        if (lexer->c == ' ' || lexer->c == 10)
+        //for whitespace
+        if (lexer->c == ' ')
         {
+            if(lexer->c == ' ' && isalnum(lexer->contents[lexer->i+1])){
+                lexer_skip_whitespace(lexer);
+                return lexer_collect_id(lexer);
+            }
             lexer_skip_whitespace(lexer);
+            
         }
-        if (isalnum(lexer->c))
+        if (lexer->c == 10)
+        {
+            if(lexer->c == 10 && isalnum(lexer->contents[lexer->i+1])){
+                lexer_skip_new_line(lexer);
+                return lexer_collect_keyword(lexer);
+            }
+            lexer_skip_new_line(lexer);
+        }
+        
+        //for KEYWORDS
+        if (isalpha(lexer->c))
+        {
+            return lexer_collect_keyword(lexer);
+        };
+
+         //for numbers
+        if (isdigit(lexer->c))
         {
             return lexer_collect_id(lexer);
         };
 
-        // parsing a string
+        // FOR THE STRINGS
         if (lexer->c == '"')
         {
             return lexer_collect_string(lexer);
@@ -125,6 +155,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     return (void *)0;
 };
 
+
 token_t *lexer_collect_string(lexer_t *lexer)
 {
     // if the lexer collected a string, advance it to skip the "
@@ -161,7 +192,33 @@ token_t *lexer_collect_id(lexer_t *lexer)
         strcat(value, s); // append the current character to value string.
         lexer_advance(lexer);
     }
-    
+        
+    return init_token(TOKEN_ID, value);
+}
+
+token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token)
+{
+    lexer_advance(lexer);
+    return token;
+}
+
+
+token_t *lexer_collect_keyword(lexer_t *lexer)
+{
+    // value is the allocation of the memory for a string
+    char *value = calloc(1, sizeof(char));
+    value[0] = '\0';
+    // while the character is an alphanumeric
+    while (isalnum(lexer->c))
+    {
+        char *s = lexer_get_current_char_as_string(lexer);
+        // reallocate the string length of the value by adding the length of s to update it and fit the string.
+        value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
+        strcat(value, s); // append the current character to value string.
+        lexer_advance(lexer);
+    }
+    // advance the token.
+    // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
     if (compare_to_keyword(value, "kung") == 1)
     {
         return init_token(TOKEN_IF, value);
@@ -266,19 +323,19 @@ token_t *lexer_collect_id(lexer_t *lexer)
     {
         return init_token(TOKEN_CHAR, value);
     }
-
-
-    // advance the token.
-    // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
-    
-    return init_token(TOKEN_ID, value);
+    else{
+        return init_token(TOKEN_UNKNOWN, value);
+    }
 }
 
-token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token)
-{
-    lexer_advance(lexer);
-    return token;
-}
+
+
+
+
+
+
+
+
 
 char *lexer_get_current_char_as_string(lexer_t *lexer)
 {
