@@ -48,9 +48,12 @@ typedef struct TOKEN_STRUCT
         TOKEN_GLOBAL,   // lahat
 
         /* ADD: data types*/
+        TOKEN_BOOL,   // bolyan
         TOKEN_BOOLT,  // totoo
         TOKEN_BOOLM,  // mali
+        TOKEN_INT,    // numero
         TOKEN_NUM,    // num literals [0-9]*
+        TOKEN_STR,    // linya
         TOKEN_STRING, // "[a-!]"
         TOKEN_NULL,   // wala
         TOKEN_FLOAT,  // punto

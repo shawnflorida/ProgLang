@@ -230,6 +230,42 @@ token_t *lexer_collect_id(lexer_t *lexer)
     {
         return init_token(TOKEN_GLOBAL, value);
     }
+    else if (compare_to_keyword(value, "bolyan") == 1)
+    {
+        return init_token(TOKEN_BOOL, value);
+    }
+    else if (compare_to_keyword(value, "totoo") == 1)
+    {
+        return init_token(TOKEN_BOOLT, value);
+    }
+    else if (compare_to_keyword(value, "mali") == 1)
+    {
+        return init_token(TOKEN_BOOLM, value);
+    }
+    else if (compare_to_keyword(value, "numero") == 1)
+    {
+        return init_token(TOKEN_INT, value);
+    }
+    else if (compare_to_keyword(value, "linya") == 1)
+    {
+        return init_token(TOKEN_STR, value);
+    }
+    else if (compare_to_keyword(value, "wala") == 1)
+    {
+        return init_token(TOKEN_NULL, value);
+    }
+    else if (compare_to_keyword(value, "punto") == 1)
+    {
+        return init_token(TOKEN_FLOAT, value);
+    }
+    else if (compare_to_keyword(value, "double") == 1)
+    {
+        return init_token(TOKEN_DBL, value);
+    }
+    else if (compare_to_keyword(value, "letra") == 1)
+    {
+        return init_token(TOKEN_CHAR, value);
+    }
 
 
     // advance the token.

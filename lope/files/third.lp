@@ -38,3 +38,10 @@ tuloy;
 at;
 o;
 nasa;
+
+bolyan a = totoo;
+bolyan b = mali;
+linya name = wala;
+punto decimal1;
+double decimal2;
+letra a;
