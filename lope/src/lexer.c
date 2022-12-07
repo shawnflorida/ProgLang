@@ -37,7 +37,7 @@ void lexer_advance(lexer_t *lexer)
 void lexer_skip_whitespace(lexer_t *lexer)
 {
     // 10 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == ' ' || lexer->c == 10)
+    while (lexer->c == ' ' || lexer->c == '\t', || lexer->c == '\n' || lexer->c == '\r' || lexer->c == '\f')
     {
         // advance the lexer
         lexer_advance(lexer);
