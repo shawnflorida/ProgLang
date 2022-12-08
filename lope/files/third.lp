@@ -1,3 +1,4 @@
+¶√bbkkbkk
 angkat package;
 dep func_name();
     balik 1;

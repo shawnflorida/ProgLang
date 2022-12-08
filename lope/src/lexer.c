@@ -72,12 +72,13 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
         //for whitespace
+       
         if (lexer->c == ' ')
         {
             lexer_skip_whitespace(lexer);
         }
         if (lexer->c == 10)
-        {
+        {   
             if(lexer->c == 10 && isalnum(lexer->contents[lexer->i+1])){
                 lexer_skip_new_line(lexer);
                 return lexer_collect_keyword(lexer);
@@ -92,7 +93,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         {
             lexer_skip_tab(lexer);
         }
-        
+       
         //for KEYWORDS
         if (isalpha(lexer->c))
         {
@@ -174,6 +175,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             break;
         default:
             return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
+            break;
         }
     }
     return (void *)0;
