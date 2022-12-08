@@ -101,7 +101,8 @@ int scanFile(lexer_t *lexer)
         "Character",
         "Invalid",
         "Single Comment",
-        "Multiple Comment"
+        "Multiple Comment",
+        "Constant",
         };
 
     while ((token = lexer_get_next_token(lexer)) != (void *)0)

@@ -6,3 +6,8 @@ numero edad = 21;
 blah blah = "blah";
 
 @@@   dsadas
+
+numero CONST;
+punto HERE;
+linya K;
+numero nOtCoNsTANT;

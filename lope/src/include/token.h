@@ -85,7 +85,9 @@ typedef struct TOKEN_STRUCT
         TOKEN_UNKNOWN, // invalid
         //for comments
         TOKEN_COMMENT_VALUE_SINGLE,
-        TOKEN_COMMENT_VALUE_MULTI
+        TOKEN_COMMENT_VALUE_MULTI,
+        // for constant
+        TOKEN_CAPITAL,
 
     } type;
 

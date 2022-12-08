@@ -508,6 +508,18 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
     else
     {
+        // count the number of capital in the string
+        int counter_caps = 0;
+
+        for(int i=0; i<strlen(value); i++)
+        {
+            if(isupper(value[i]))
+                counter_caps++;
+        }
+
+        if(counter_caps == strlen(value))
+            return init_token(TOKEN_CAPITAL, value);
+            
         return init_token(TOKEN_ID, value);
     }
 }
