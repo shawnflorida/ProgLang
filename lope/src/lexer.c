@@ -74,7 +74,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             }
             lexer_skip_new_line(lexer);
         }
-        
+
         //for KEYWORDS
         if (isalpha(lexer->c))
         {
@@ -92,6 +92,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         {
             return lexer_collect_string(lexer);
         }
+
         switch (lexer->c)
         {
         // if the case is =, call lexer advance while carrying the token,
@@ -135,6 +136,9 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             break;
         case '/':
             return lexer_advance_with_token(lexer, init_token(TOKEN_DIV, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '~':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_INT_DIV, lexer_get_current_char_as_string(lexer)));
             break;
         case '*':
             return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer)));
@@ -327,11 +331,11 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_FLOAT, value);
     }
-    else if (compare_to_keyword(value, "double") == 1)
+    else if (compare_to_keyword(value, "doble") == 1)
     {
         return init_token(TOKEN_DBL, value);
     }
-    else if (compare_to_keyword(value, "doublenumero") == 1)
+    else if (compare_to_keyword(value, "doblenumero") == 1)
     {
         return init_token(TOKEN_DBL, value);
     }
@@ -347,15 +351,6 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
         return init_token(TOKEN_UNKNOWN, value);
     }
 }
-
-
-
-
-
-
-
-
-
 
 char *lexer_get_current_char_as_string(lexer_t *lexer)
 {

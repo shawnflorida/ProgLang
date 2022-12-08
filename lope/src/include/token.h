@@ -7,7 +7,6 @@ typedef struct TOKEN_STRUCT
     {
         /* id is identifiers */
         TOKEN_ID,       // [a-zA-Z]
-        TOKEN_NUMBER,    // [0-9]
         TOKEN_EQUALS,   // =
         TOKEN_SEMI,     // ;
         TOKEN_LPAREN,   // (
@@ -22,6 +21,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_ADD,     // +
         TOKEN_SUB,     // -
         TOKEN_DIV,     // /
+        TOKEN_INT_DIV,  // ~
         TOKEN_MULT,    // \*
         TOKEN_MOD,     // %
         TOKEN_EXP,     // ^
