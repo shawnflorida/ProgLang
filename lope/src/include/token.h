@@ -22,7 +22,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_SUB,        // -
         TOKEN_DIV,        // /
         TOKEN_INTDIV,     // ~
-        TOKEN_MULT,       // \*
+        TOKEN_MULT,       // *
         TOKEN_MOD,        // %
         TOKEN_EXP,        // ^
         TOKEN_LESS,       // <
@@ -88,6 +88,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_COMMENT_VALUE_MULTI,
         // for constant
         TOKEN_CAPITAL,
+        TOKEN_COMMA,
 
     } type;
 

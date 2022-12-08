@@ -25,7 +25,6 @@ void lexer_advance(lexer_t *lexer)
     // if the current character is equal to null space and less than the len of contents,
     // add 1 to index and character should be equal to lexer's content indexed by the current lexer
     if ((lexer->c != '\0' || lexer->c != ' ' || lexer->c != '\t') && lexer->i < strlen(lexer->contents))
-    if ((lexer->c != '\0' || lexer->c != ' ' || lexer->c != '\t') && lexer->i < strlen(lexer->contents))
     {
         lexer->i += 1;
         lexer->c = lexer->contents[lexer->i];
@@ -35,27 +34,7 @@ void lexer_advance(lexer_t *lexer)
 void lexer_skip_whitespace(lexer_t *lexer)
 {
     // 10 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == ' ')
-    {
-        // advance the lexer
-        lexer_advance(lexer);
-    }
-};
-
-void lexer_skip_new_line(lexer_t *lexer)
-{
-    // 10 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == 10)
-    {
-        // advance the lexer
-        lexer_advance(lexer);
-    }
-};
-
-void lexer_skip_tab(lexer_t *lexer)
-{
-    // 9 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == 9)
+    while (lexer->c == ' ' || lexer->c == '\n' || lexer->c == '\t')
     {
         // advance the lexer
         lexer_advance(lexer);
@@ -69,68 +48,24 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
         // for whitespace
-
-        if (lexer->c == ' ')
+        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c || '\n')
         {
             lexer_skip_whitespace(lexer);
         }
-        if (lexer->c == 10)
-        {
-            if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
-            {
-                if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
-                {
-                    lexer_skip_new_line(lexer);
-                    return lexer_collect_keyword(lexer);
-                }
-                else if (lexer->c == 10 && lexer->contents[lexer->i + 2] == ' ')
-                {
-                    lexer_skip_new_line(lexer);
-                    lexer_skip_whitespace(lexer);
-                    return lexer_collect_keyword(lexer);
-                }
-                lexer_skip_new_line(lexer);
-            }
-        }
-        if (lexer->c == 9)
-        {
-            lexer_skip_tab(lexer);
-        }
-
-        // for KEYWORDS
-
-        // for KEYWORDS
-        if (isalpha(lexer->c))
-        {
-            return lexer_collect_keyword(lexer);
-        };
-
-         //for numbers
-        if (isdigit(lexer->c))
-        {
-                return lexer_collect_number(lexer);
-        };
-
-        // FOR THE STRINGS
-        if (lexer->c == '"')
-        {
-            return lexer_collect_string(lexer);
-        }
-
-        if (lexer->c == '#')
-        {
-            if(lexer->contents[lexer->i + 1] == '*'){
-                return lexer_collect_comment_multi(lexer);
-            }
-            return lexer_collect_comment_single(lexer);
-        }
-
 
         switch (lexer->c)
         {
         // if the case is =, call lexer advance while carrying the token,
         // add its parameter the current lexer instance, and the result
         // of init_token if we inputted TOKEN_EQUALS, and the current lexer character as a string.
+        case '#':
+            if (lexer->contents[lexer->i + 1] == '*')
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_MULTI, lexer_get_operator_ext_as_string(lexer)));
+            } else 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_SINGLE, lexer_get_current_char_as_string(lexer)));
+            }
         case '=':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
@@ -224,6 +159,9 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             if (lexer->contents[lexer->i + 1] == '=') 
             {
                 return lexer_advance_with_token(lexer, init_token(TOKEN_MULT_ASGN, lexer_get_operator_ext_as_string(lexer)));
+            } else if (lexer->contents[lexer->i + 1] == '#')
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_MULTI, lexer_get_operator_ext_as_string(lexer)));
             } else
             {
                 return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer)));
@@ -241,6 +179,24 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         case '^':
             return lexer_advance_with_token(lexer, init_token(TOKEN_EXP, lexer_get_current_char_as_string(lexer)));
             break;
+        case '|':
+            if (lexer->contents[lexer-> i + 1] == '|')
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_OR, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
+            }
+            break;
+        case '&':
+            if (lexer->contents[lexer-> i + 1] == '&')
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_AND, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
+            }
+            break;
         case '!':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
@@ -256,7 +212,28 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         case '_':
             return lexer_advance_with_token(lexer, init_token(TOKEN_UNDERSCORE, lexer_get_current_char_as_string(lexer)));
             break;
+        case ',':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_COMMA, lexer_get_current_char_as_string(lexer)));
         default:
+            // for KEYWORDS
+            if (isalpha(lexer->c))
+            {
+                return lexer_collect_keyword(lexer);
+            };
+
+            //for numbers
+            if (isdigit(lexer->c))
+            {
+                    return lexer_collect_number(lexer);
+            };
+
+            // FOR THE STRINGS
+            if (lexer->c == '"')
+            {
+                return lexer_collect_string(lexer);
+            }
+
+            // Unknown
             return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
             break;
         }
@@ -285,39 +262,6 @@ token_t *lexer_collect_string(lexer_t *lexer)
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
 
     return init_token(TOKEN_STRING, value);
-};
-
-token_t *lexer_collect_comment_single(lexer_t *lexer)
-{
-    lexer_advance(lexer);
-    char *value = calloc(1, sizeof(char));
-    value[0] = '\0';
-    while (lexer->c != '\n')
-    {
-        char *s = lexer_get_current_char_as_string(lexer);
-        value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
-        strcat(value, s); // append the current character to value string.
-        lexer_advance(lexer);
-    }
-    return init_token(TOKEN_COMMENT_VALUE_SINGLE, value);
-};
-
-token_t *lexer_collect_comment_multi(lexer_t *lexer)
-{
-    lexer_advance(lexer);
-    lexer_advance(lexer);
-    char *value = calloc(1, sizeof(char));
-    value[0] = '\0';
-    while (lexer->c != '*' && lexer->contents[lexer->i + 1] != '#')
-    {
-        char *s = lexer_get_current_char_as_string(lexer);
-        value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
-        strcat(value, s);
-        lexer_advance(lexer);
-    }
-    lexer_advance(lexer); //for *
-    lexer_advance(lexer); //for #
-    return init_token(TOKEN_COMMENT_VALUE_MULTI, value);
 };
 
 char* lexer_get_operator_ext_as_string(lexer_t *lexer)
@@ -362,7 +306,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while (isalnum(lexer->c) || lexer->c == '_')
+    while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t') && isalnum(lexer->c) || lexer->c == '_')
     {
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
@@ -500,17 +444,23 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         // count the number of capital in the string
         int counter_caps = 0;
+        int flag_illegal_symbol = 0;
 
         for(int i=0; i<strlen(value); i++)
         {
             if(isupper(value[i]))
                 counter_caps++;
+            else if ((isalnum(value[i]) == 0 && value[i] != '_') || isdigit(value[i]) == 1)
+                flag_illegal_symbol = 1;
         }
         if(counter_caps == strlen(value))
         {
             return init_token(TOKEN_CAPITAL, value);
-        }   
-        return init_token(TOKEN_ID, value);
+        }
+        if (flag_illegal_symbol == 0)   
+            return init_token(TOKEN_ID, value);
+        else
+            return init_token(TOKEN_UNKNOWN, value);
     }
 }
 

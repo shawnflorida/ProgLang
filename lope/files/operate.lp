@@ -1,2 +1,22 @@
-numero x = 2;
-x += 3;
+#*
+    +=
+    -=
+    *=
+    /=
+    %=
+    ~=
+    DASKAPITAL
+    ==
+    <=
+    >=
+    !=
+    ++
+    --
+    _
+    &&
+    ||
+    numero cudi = 404;
+    num yeezy = 808;
+    ,
+    kid_cudi64
+*#

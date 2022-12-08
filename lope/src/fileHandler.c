@@ -103,6 +103,7 @@ int scanFile(lexer_t *lexer)
         "Single Comment",
         "Multiple Comment",
         "Constant",
+        "Comma Separator"
         };
 
     while ((token = lexer_get_next_token(lexer)) != (void *)0)
