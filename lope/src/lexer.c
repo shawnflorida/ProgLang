@@ -48,7 +48,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
         // for whitespace
-        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c || '\n')
+        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n') 
         {
             lexer_skip_whitespace(lexer);
         }
@@ -61,10 +61,12 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         case '#':
             if (lexer->contents[lexer->i + 1] == '*')
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_MULTI, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_collect_comment_multi(lexer);
+                /* return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_MULTI, lexer_get_operator_ext_as_string(lexer))); */
             } else 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_SINGLE, lexer_get_current_char_as_string(lexer)));
+                return lexer_collect_comment_single(lexer);
+                /* return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_SINGLE, lexer_get_current_char_as_string(lexer))); */
             }
         case '=':
             if (lexer->contents[lexer->i + 1] == '=') 
@@ -505,3 +507,36 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
     return init_token(TOKEN_NUM, value);
 }
+
+token_t *lexer_collect_comment_single(lexer_t *lexer)
+{
+    lexer_advance(lexer);
+    char *value = calloc(1, sizeof(char));
+    value[0] = '\0';
+    while (lexer->c != '\n')
+    {
+        char *s = lexer_get_current_char_as_string(lexer);
+        value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
+        strcat(value, s); // append the current character to value string.
+        lexer_advance(lexer);
+    }
+    return init_token(TOKEN_COMMENT_VALUE_SINGLE, value);
+};
+
+token_t *lexer_collect_comment_multi(lexer_t *lexer)
+{
+    lexer_advance(lexer);
+    lexer_advance(lexer);
+    char *value = calloc(1, sizeof(char));
+    value[0] = '\0';
+    while (!(lexer->c == '*' && lexer->contents[lexer->i + 1] == '#'))
+    {
+        char *s = lexer_get_current_char_as_string(lexer);
+        value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
+        strcat(value, s);
+        lexer_advance(lexer);
+    }
+    lexer_advance(lexer); //for *
+    lexer_advance(lexer); //for #
+    return init_token(TOKEN_COMMENT_VALUE_MULTI, value);
+};
