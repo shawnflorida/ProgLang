@@ -1,1 +1,0 @@
-linya pangalan = "second file";
