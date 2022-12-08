@@ -1,5 +1,0 @@
-TOKEN(String,linya)
-TOKEN(Identifier/Value,pangalan)
-TOKEN(Equal Sign,=)
-TOKEN(String Literal,second file)
-TOKEN(Semi-Colon,;)
