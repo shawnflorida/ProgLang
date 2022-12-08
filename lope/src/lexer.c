@@ -59,7 +59,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         //for whitespace
         if (lexer->c == ' ')
         {
-            if(lexer->c == ' ' && isalnum(lexer->contents[lexer->i+1])){
+            if(lexer->c == ' ' && isalpha(lexer->contents[lexer->i+1])){
                 lexer_skip_whitespace(lexer);
                 return lexer_collect_id(lexer);
             }
@@ -68,7 +68,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         }
         if (lexer->c == 10)
         {
-            if(lexer->c == 10 && isalnum(lexer->contents[lexer->i+1])){
+            if(lexer->c == 10 && isalpha(lexer->contents[lexer->i+1])){
                 lexer_skip_new_line(lexer);
                 return lexer_collect_keyword(lexer);
             }
@@ -81,10 +81,10 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             return lexer_collect_keyword(lexer);
         };
 
-         //for numbers
+        //for numbers
         if (isdigit(lexer->c))
         {
-            return lexer_collect_id(lexer);
+                return lexer_collect_number(lexer);
         };
 
         // FOR THE STRINGS
@@ -184,7 +184,7 @@ token_t *lexer_collect_id(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while (isalnum(lexer->c))
+    while (isalpha(lexer->c))
     {
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
@@ -209,7 +209,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while (isalnum(lexer->c))
+    while (isalpha(lexer->c))
     {
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
@@ -240,6 +240,10 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
         return init_token(TOKEN_FOR, value);
     }
     else if (compare_to_keyword(value, "dep") == 1)
+    {
+        return init_token(TOKEN_FUNCTION, value);
+    }
+    else if (compare_to_keyword(value, "depinisyon") == 1)
     {
         return init_token(TOKEN_FUNCTION, value);
     }
@@ -303,6 +307,10 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_INT, value);
     }
+    else if (compare_to_keyword(value, "num") == 1)
+    {
+        return init_token(TOKEN_INT, value);
+    }
     else if (compare_to_keyword(value, "linya") == 1)
     {
         return init_token(TOKEN_STR, value);
@@ -315,11 +323,23 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_FLOAT, value);
     }
+    else if (compare_to_keyword(value, "puntonumero") == 1)
+    {
+        return init_token(TOKEN_FLOAT, value);
+    }
     else if (compare_to_keyword(value, "double") == 1)
     {
         return init_token(TOKEN_DBL, value);
     }
-    else if (compare_to_keyword(value, "letra") == 1)
+    else if (compare_to_keyword(value, "doublenumero") == 1)
+    {
+        return init_token(TOKEN_DBL, value);
+    }
+    else if (compare_to_keyword(value, "karakter") == 1)
+    {
+        return init_token(TOKEN_CHAR, value);
+    }
+    else if (compare_to_keyword(value, "kar") == 1)
     {
         return init_token(TOKEN_CHAR, value);
     }
@@ -359,4 +379,22 @@ int compare_to_keyword(char *identifier, char *keyword)
         }
     }
     return 1;
+}
+
+token_t* lexer_collect_number(lexer_t *lexer) {
+    // value is the allocation of the memory for a string
+    char *value = calloc(1, sizeof(char));
+    value[0] = '\0';
+    // while the character is an alphanumeric
+    while (isdigit(lexer->c))
+    {
+        char *s = lexer_get_current_char_as_string(lexer);
+        // reallocate the string length of the value by adding the length of s to update it and fit the string.
+        value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
+        strcat(value, s); // append the current character to value string.
+        lexer_advance(lexer);
+    }
+    // advance the token.
+    // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
+    return init_token(TOKEN_NUM, value);
 }

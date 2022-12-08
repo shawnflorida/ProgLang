@@ -26,7 +26,11 @@ token_t *lexer_get_next_token(lexer_t *lexer);
 // defining how to parse the string
 token_t *lexer_collect_string(lexer_t *lexer);
 
+// defining how to parse identifiers
 token_t *lexer_collect_id(lexer_t *lexer);
+
+// defining how to parse numbers
+token_t* lexer_collect_number(lexer_t *lexer);
 
 // helper method to call lexer advance lexer and return the token.
 //  takes in instance of token and lexer

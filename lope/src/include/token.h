@@ -6,7 +6,8 @@ typedef struct TOKEN_STRUCT
     enum
     {
         /* id is identifiers */
-        TOKEN_ID,       //[a-zA-Z0-9]
+        TOKEN_ID,       // [a-zA-Z]
+        TOKEN_NUMBER,    // [0-9]
         TOKEN_EQUALS,   // =
         TOKEN_SEMI,     // ;
         TOKEN_LPAREN,   // (
@@ -51,14 +52,14 @@ typedef struct TOKEN_STRUCT
         TOKEN_BOOL,   // bolyan
         TOKEN_BOOLT,  // totoo
         TOKEN_BOOLM,  // mali
-        TOKEN_INT,    // numero
+        TOKEN_INT,    // numero / num
         TOKEN_NUM,    // num literals [0-9]*
         TOKEN_STR,    // linya
         TOKEN_STRING, // "[a-!]"
         TOKEN_NULL,   // wala
-        TOKEN_FLOAT,  // punto
-        TOKEN_DBL,    // double
-        TOKEN_CHAR,   // letra
+        TOKEN_FLOAT,  // punto / puntonumero
+        TOKEN_DBL,    // doble / doblenumero
+        TOKEN_CHAR,   // karakter / kar
 
         /* unknown token */
         TOKEN_UNKNOWN // invalid

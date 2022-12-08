@@ -19,6 +19,7 @@ int scanFile(lexer_t *lexer)
     token_t *token = (void *)0;
     const char *token_type[] = {
         "Identifier/Value",
+        "Number",
         "Equal Sign",
         "Semi-Colon",
         "Left Parenthesis",
