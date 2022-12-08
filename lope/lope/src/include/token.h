@@ -27,8 +27,6 @@ typedef struct TOKEN_STRUCT
         TOKEN_LESS,    // <
         TOKEN_GREATER, // >
         TOKEN_NEGATE,  // !
-        TOKEN_COLON, //:
-        TOKEN_UNDERSCORE, // _ 
 
         /* ADD: keywords */
         TOKEN_WHLE,     // habang

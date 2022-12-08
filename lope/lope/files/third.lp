@@ -1,11 +1,15 @@
 angkat package;
+
 dep func_name();
     balik 1;
+
 numero x = 0;
 numero y = 1;
+
 habang(x <= 3){
     x++;
 }
+
 kung(x)
 {
     lahad(x);
@@ -18,6 +22,7 @@ sakali
 {
     lahad("wala");
 }
+
 subukan:
     para(numero a=0; a<=3; a++)
     {
@@ -26,11 +31,14 @@ subukan:
 maliban:
     lahad("error");
     tigil;
+
 lahat value = "totoo";
+
 tuloy;
 at;
 o;
 nasa;
+
 bolyan a = totoo;
 bolyan b = mali;
 linya name = wala;

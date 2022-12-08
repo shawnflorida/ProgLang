@@ -37,8 +37,6 @@ int scanFile(lexer_t *lexer)
         "Lesser Than",
         "Greater Than",
         "Not",
-        "Colon",
-        "Underscore",
         "While",
         "If",
         "Else",

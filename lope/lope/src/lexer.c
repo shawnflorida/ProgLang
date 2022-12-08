@@ -24,7 +24,7 @@ void lexer_advance(lexer_t *lexer)
 
     // if the current character is equal to null space and less than the len of contents,
     // add 1 to index and character should be equal to lexer's content indexed by the current lexer
-    if ((lexer->c != '\0'|| lexer->c != ' '|| lexer->c != '\t') && lexer->i < strlen(lexer->contents))
+    if ((lexer->c != '\0'|| lexer->c != ' ') && lexer->i < strlen(lexer->contents))
     {
         lexer->i += 1;
         lexer->c = lexer->contents[lexer->i];
@@ -50,21 +50,6 @@ void lexer_skip_new_line(lexer_t *lexer)
         lexer_advance(lexer);
     }
 };
-
-
-void lexer_skip_tab(lexer_t *lexer)
-{
-    // 9 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == 9)
-    {
-        // advance the lexer
-        lexer_advance(lexer);
-    }
-};
-
-
-
-
 token_t *lexer_get_next_token(lexer_t *lexer)
 {
     // while lexer is not a null and i is less than the lexer contents; meaning
@@ -74,23 +59,20 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         //for whitespace
         if (lexer->c == ' ')
         {
+            if(lexer->c == ' ' && isalnum(lexer->contents[lexer->i+1])){
+                lexer_skip_whitespace(lexer);
+                return lexer_collect_id(lexer);
+            }
             lexer_skip_whitespace(lexer);
+            
         }
         if (lexer->c == 10)
         {
             if(lexer->c == 10 && isalnum(lexer->contents[lexer->i+1])){
                 lexer_skip_new_line(lexer);
                 return lexer_collect_keyword(lexer);
-            }else if(lexer->c == 10 && lexer->contents[lexer->i+2]== ' '){
-                lexer_skip_new_line(lexer);
-                lexer_skip_whitespace(lexer);
-                return lexer_collect_keyword(lexer);
             }
             lexer_skip_new_line(lexer);
-        }
-        if (lexer->c == 9)
-        {
-            lexer_skip_tab(lexer);
         }
         
         //for KEYWORDS
@@ -165,12 +147,6 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             break;
         case '!':
             return lexer_advance_with_token(lexer, init_token(TOKEN_NEGATE, lexer_get_current_char_as_string(lexer)));
-            break;
-        case ':':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_COLON, lexer_get_current_char_as_string(lexer)));
-            break;
-        case '_':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_UNDERSCORE, lexer_get_current_char_as_string(lexer)));
             break;
         default:
             return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
@@ -348,9 +324,16 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
         return init_token(TOKEN_CHAR, value);
     }
     else{
-        return init_token(TOKEN_ID, value);
+        return init_token(TOKEN_UNKNOWN, value);
     }
 }
+
+
+
+
+
+
+
 
 
 

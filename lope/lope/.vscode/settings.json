@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "files.associations": {
         "*.ejs": "html",
         "*.COBOL*": "cobol",
@@ -31,10 +30,3 @@
         "addfile.h": "c"
     }
 }
-=======
-  "files.associations": {
-    "stdio.h": "c",
-    "addfile.h": "c"
-  }
-}
->>>>>>> ec393d6582e148c50d922ed9309f0174aff7f8a5
