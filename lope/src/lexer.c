@@ -24,7 +24,7 @@ void lexer_advance(lexer_t *lexer)
 
     // if the current character is equal to null space and less than the len of contents,
     // add 1 to index and character should be equal to lexer's content indexed by the current lexer
-    if ((lexer->c != '\0'|| lexer->c != ' '|| lexer->c != '\t') && lexer->i < strlen(lexer->contents))
+    if ((lexer->c != '\0' || lexer->c != ' ' || lexer->c != '\t') && lexer->i < strlen(lexer->contents))
     {
         lexer->i += 1;
         lexer->c = lexer->contents[lexer->i];
@@ -51,7 +51,6 @@ void lexer_skip_new_line(lexer_t *lexer)
     }
 };
 
-
 void lexer_skip_tab(lexer_t *lexer)
 {
     // 9 is code for new line; meaning while lexer is a space or a new line:
@@ -62,26 +61,26 @@ void lexer_skip_tab(lexer_t *lexer)
     }
 };
 
-
-
-
 token_t *lexer_get_next_token(lexer_t *lexer)
 {
     // while lexer is not a null and i is less than the lexer contents; meaning
     // there are tokens that are needed to be parsed.
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
-        //for whitespace
+        // for whitespace
         if (lexer->c == ' ')
         {
             lexer_skip_whitespace(lexer);
         }
         if (lexer->c == 10)
         {
-            if(lexer->c == 10 && isalnum(lexer->contents[lexer->i+1])){
+            if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
+            {
                 lexer_skip_new_line(lexer);
                 return lexer_collect_keyword(lexer);
-            }else if(lexer->c == 10 && lexer->contents[lexer->i+2]== ' '){
+            }
+            else if (lexer->c == 10 && lexer->contents[lexer->i + 2] == ' ')
+            {
                 lexer_skip_new_line(lexer);
                 lexer_skip_whitespace(lexer);
                 return lexer_collect_keyword(lexer);
@@ -92,14 +91,14 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         {
             lexer_skip_tab(lexer);
         }
-        
-        //for KEYWORDS
+
+        // for KEYWORDS
         if (isalpha(lexer->c))
         {
             return lexer_collect_keyword(lexer);
         };
 
-         //for numbers
+        // for numbers
         if (isdigit(lexer->c))
         {
             return lexer_collect_id(lexer);
@@ -179,7 +178,6 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     return (void *)0;
 };
 
-
 token_t *lexer_collect_string(lexer_t *lexer)
 {
     // if the lexer collected a string, advance it to skip the "
@@ -216,7 +214,7 @@ token_t *lexer_collect_id(lexer_t *lexer)
         strcat(value, s); // append the current character to value string.
         lexer_advance(lexer);
     }
-        
+
     return init_token(TOKEN_ID, value);
 }
 
@@ -225,7 +223,6 @@ token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token)
     lexer_advance(lexer);
     return token;
 }
-
 
 token_t *lexer_collect_keyword(lexer_t *lexer)
 {
@@ -347,12 +344,11 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_CHAR, value);
     }
-    else{
+    else
+    {
         return init_token(TOKEN_ID, value);
     }
 }
-
-
 
 char *lexer_get_current_char_as_string(lexer_t *lexer)
 {

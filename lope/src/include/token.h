@@ -18,17 +18,17 @@ typedef struct TOKEN_STRUCT
         TOKEN_COMMENT,  // #
 
         /* ADD: operators */
-        TOKEN_ADD,     // +
-        TOKEN_SUB,     // -
-        TOKEN_DIV,     // /
-        TOKEN_MULT,    // \*
-        TOKEN_MOD,     // %
-        TOKEN_EXP,     // ^
-        TOKEN_LESS,    // <
-        TOKEN_GREATER, // >
-        TOKEN_NEGATE,  // !
-        TOKEN_COLON, //:
-        TOKEN_UNDERSCORE, // _ 
+        TOKEN_ADD,        // +
+        TOKEN_SUB,        // -
+        TOKEN_DIV,        // /
+        TOKEN_MULT,       // \*
+        TOKEN_MOD,        // %
+        TOKEN_EXP,        // ^
+        TOKEN_LESS,       // <
+        TOKEN_GREATER,    // >
+        TOKEN_NEGATE,     // !
+        TOKEN_COLON,      //:
+        TOKEN_UNDERSCORE, // _
 
         /* ADD: keywords */
         TOKEN_WHLE,     // habang
