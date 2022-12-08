@@ -78,21 +78,19 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         {
             if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
             {
-            if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
-            {
+                if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
+                {
+                    lexer_skip_new_line(lexer);
+                    return lexer_collect_keyword(lexer);
+                }
+                else if (lexer->c == 10 && lexer->contents[lexer->i + 2] == ' ')
+                {
+                    lexer_skip_new_line(lexer);
+                    lexer_skip_whitespace(lexer);
+                    return lexer_collect_keyword(lexer);
+                }
                 lexer_skip_new_line(lexer);
-                return lexer_collect_keyword(lexer);
             }
-            else if (lexer->c == 10 && lexer->contents[lexer->i + 2] == ' ')
-            {
-            }
-            else if (lexer->c == 10 && lexer->contents[lexer->i + 2] == ' ')
-            {
-                lexer_skip_new_line(lexer);
-                lexer_skip_whitespace(lexer);
-                return lexer_collect_keyword(lexer);
-            }
-            lexer_skip_new_line(lexer);
         }
         if (lexer->c == 9)
         {
@@ -251,12 +249,6 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             {
                 return lexer_advance_with_token(lexer, init_token(TOKEN_NEGATE, lexer_get_current_char_as_string(lexer)));
             }
-            break;
-        case ':':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_COLON, lexer_get_current_char_as_string(lexer)));
-            break;
-        case '_':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_UNDERSCORE, lexer_get_current_char_as_string(lexer)));
             break;
         case ':':
             return lexer_advance_with_token(lexer, init_token(TOKEN_COLON, lexer_get_current_char_as_string(lexer)));
@@ -506,8 +498,6 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     }
     else
     {
-    else
-    {
         // count the number of capital in the string
         int counter_caps = 0;
 
@@ -516,10 +506,10 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
             if(isupper(value[i]))
                 counter_caps++;
         }
-
         if(counter_caps == strlen(value))
+        {
             return init_token(TOKEN_CAPITAL, value);
-            
+        }   
         return init_token(TOKEN_ID, value);
     }
 }
