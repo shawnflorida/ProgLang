@@ -25,6 +25,7 @@ int check_Extension(char *file)
 }
 void create_TokenOutput(char *file)
 {
+    memset(fileName, 0, sizeof(fileName));
     strncpy(fileName, file, strrchr(file, '.') - file);
     strcat(fileName, "_SymbolTable");
     strcat(fileName, ".txt");
