@@ -67,7 +67,10 @@ int scanFile(lexer_t *lexer)
         "Float",
         "Double",
         "Character",
-        "Invalid"};
+        "Invalid",
+        "Single Comment",
+        "Multiple Comment"
+        };
 
     while ((token = lexer_get_next_token(lexer)) != (void *)0)
     {
