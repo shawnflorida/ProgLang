@@ -25,6 +25,7 @@ void lexer_advance(lexer_t *lexer)
     // if the current character is equal to null space and less than the len of contents,
     // add 1 to index and character should be equal to lexer's content indexed by the current lexer
     if ((lexer->c != '\0' || lexer->c != ' ' || lexer->c != '\t') && lexer->i < strlen(lexer->contents))
+    if ((lexer->c != '\0' || lexer->c != ' ' || lexer->c != '\t') && lexer->i < strlen(lexer->contents))
     {
         lexer->i += 1;
         lexer->c = lexer->contents[lexer->i];
@@ -77,8 +78,13 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         {
             if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
             {
+            if (lexer->c == 10 && isalnum(lexer->contents[lexer->i + 1]))
+            {
                 lexer_skip_new_line(lexer);
                 return lexer_collect_keyword(lexer);
+            }
+            else if (lexer->c == 10 && lexer->contents[lexer->i + 2] == ' ')
+            {
             }
             else if (lexer->c == 10 && lexer->contents[lexer->i + 2] == ' ')
             {
@@ -94,11 +100,14 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         }
 
         // for KEYWORDS
+
+        // for KEYWORDS
         if (isalpha(lexer->c))
         {
             return lexer_collect_keyword(lexer);
         };
 
+        // for numbers
         // for numbers
         if (isdigit(lexer->c))
         {
@@ -259,6 +268,7 @@ token_t *lexer_collect_id(lexer_t *lexer)
         lexer_advance(lexer);
     }
 
+
     return init_token(TOKEN_ID, value);
 }
 
@@ -388,6 +398,8 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_CHAR, value);
     }
+    else
+    {
     else
     {
         return init_token(TOKEN_ID, value);
