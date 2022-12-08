@@ -21,13 +21,31 @@ typedef struct TOKEN_STRUCT
         TOKEN_ADD,     // +
         TOKEN_SUB,     // -
         TOKEN_DIV,     // /
-        TOKEN_INT_DIV,  // ~
+        TOKEN_INTDIV,  // ~
         TOKEN_MULT,    // \*
         TOKEN_MOD,     // %
         TOKEN_EXP,     // ^
         TOKEN_LESS,    // <
         TOKEN_GREATER, // >
         TOKEN_NEGATE,  // !
+
+        // Unary
+        TOKEN_INCR,    // ++
+        TOKEN_DECR,    // --
+        
+        // Relational
+        TOKEN_EQ_TO,        // ==
+        TOKEN_LS_THAN_EQ,   // <=
+        TOKEN_GR_THAN_EQ,   // >=
+        TOKEN_NOT_EQ,       // !=
+
+        // Operator + Assignment
+        TOKEN_ADD_ASGN,     // +=
+        TOKEN_SUB_ASGN,     // -=
+        TOKEN_MULT_ASGN,    // *=
+        TOKEN_DIV_ASGN,     // /=
+        TOKEN_MOD_ASGN,     // %=
+        TOKEN_INTDIV_ASGN,  // ~=
 
         /* ADD: keywords */
         TOKEN_WHLE,     // habang

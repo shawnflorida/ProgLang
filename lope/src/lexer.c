@@ -99,7 +99,13 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         // add its parameter the current lexer instance, and the result
         // of init_token if we inputted TOKEN_EQUALS, and the current lexer character as a string.
         case '=':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_EQ_TO, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case ';':
             return lexer_advance_with_token(lexer, init_token(TOKEN_SEMI, lexer_get_current_char_as_string(lexer)));
@@ -123,34 +129,93 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             return lexer_advance_with_token(lexer, init_token(TOKEN_LBRACKET, lexer_get_current_char_as_string(lexer)));
             break;
         case '<':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_LS_THAN_EQ, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '>':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_GREATER, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_GR_THAN_EQ, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_GREATER, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '+':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_ADD, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_ADD_ASGN, lexer_get_operator_ext_as_string(lexer)));
+            } else if (lexer->contents[lexer->i + 1] == '+') {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_INCR, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_ADD, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '-':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_SUB, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_SUB_ASGN, lexer_get_operator_ext_as_string(lexer)));
+            } else if (lexer->contents[lexer->i + 1] == '-')
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_DECR, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_SUB, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '/':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_DIV, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_DIV_ASGN, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_DIV, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '~':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_INT_DIV, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_INTDIV_ASGN, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_INTDIV, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '*':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_MULT_ASGN, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '%':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_MOD, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_MOD_ASGN, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         case '^':
             return lexer_advance_with_token(lexer, init_token(TOKEN_EXP, lexer_get_current_char_as_string(lexer)));
             break;
         case '!':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_NEGATE, lexer_get_current_char_as_string(lexer)));
+            if (lexer->contents[lexer->i + 1] == '=') 
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_NOT_EQ, lexer_get_operator_ext_as_string(lexer)));
+            } else
+            {
+                return lexer_advance_with_token(lexer, init_token(TOKEN_NEGATE, lexer_get_current_char_as_string(lexer)));
+            }
             break;
         default:
             return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
@@ -158,6 +223,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     }
     return (void *)0;
 };
+
 
 
 token_t *lexer_collect_string(lexer_t *lexer)
@@ -181,6 +247,17 @@ token_t *lexer_collect_string(lexer_t *lexer)
 
     return init_token(TOKEN_STRING, value);
 };
+
+char* lexer_get_operator_ext_as_string(lexer_t *lexer)
+{
+    char* value = calloc(3, sizeof(char));
+    value[0] = lexer->c;
+    lexer_advance(lexer);
+    value[1] = lexer->c;
+    value[2] = '\0';
+    
+    return value;
+}
 
 token_t *lexer_collect_id(lexer_t *lexer)
 {

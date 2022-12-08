@@ -32,6 +32,9 @@ token_t *lexer_collect_id(lexer_t *lexer);
 // defining how to parse numbers
 token_t* lexer_collect_number(lexer_t *lexer);
 
+// helper method for getting two-character operators
+char* lexer_get_operator_ext_as_string(lexer_t *lexer);
+
 // helper method to call lexer advance lexer and return the token.
 //  takes in instance of token and lexer
 token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token);
