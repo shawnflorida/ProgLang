@@ -63,7 +63,11 @@ typedef struct TOKEN_STRUCT
         TOKEN_CHAR,   // letra
 
         /* unknown token */
-        TOKEN_UNKNOWN // invalid
+        TOKEN_UNKNOWN, // invalid
+        //for comments
+        TOKEN_COMMENT_VALUE_SINGLE,
+        TOKEN_COMMENT_VALUE_MULTI
+
     } type;
 
     char *value;

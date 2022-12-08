@@ -33,7 +33,9 @@ token_t *lexer_collect_id(lexer_t *lexer);
 token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token);
 
 char *lexer_get_current_char_as_string(lexer_t *lexer);
-int compare_to_keyword(char *identfier, char *keyword);
+int compare_to_keyword(char *identifier, char *keyword);
 token_t *lexer_collect_keyword(lexer_t *lexer);
+token_t *lexer_collect_comment_single(lexer_t *lexer);
+token_t *lexer_collect_comment_multi(lexer_t *lexer);
 
 #endif

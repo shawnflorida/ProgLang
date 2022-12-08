@@ -1,4 +1,6 @@
-¶√bbkkbkk
+
+#comment by shawn
+#*multiple comment by shawn second line comment by shawn*#
 angkat package;
 dep func_name();
     balik 1;
@@ -23,6 +25,7 @@ subukan:
     para(numero a=0; a<=3; a++)
     {
         lahad(a);
+        lahad("shawn_Shawn_eunice_yuan_kenshin_ewan");
     }
 maliban:
     lahad("error");
