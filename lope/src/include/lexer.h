@@ -45,4 +45,5 @@ token_t *lexer_collect_keyword(lexer_t *lexer);
 
 token_t *lexer_collect_comment_single(lexer_t *lexer);
 token_t *lexer_collect_comment_multi(lexer_t *lexer);
+token_t *lexer_collect_char_lit(lexer_t *lexer);
 #endif

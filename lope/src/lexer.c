@@ -235,6 +235,11 @@ token_t *lexer_get_next_token(lexer_t *lexer)
                 return lexer_collect_string(lexer);
             }
 
+            if (lexer->c == '\'')
+            {
+                return lexer_collect_char_lit(lexer);
+            }
+
             // Unknown
             return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
             break;
@@ -539,4 +544,23 @@ token_t *lexer_collect_comment_multi(lexer_t *lexer)
     lexer_advance(lexer); //for *
     lexer_advance(lexer); //for #
     return init_token(TOKEN_COMMENT_VALUE_MULTI, value);
+};
+
+token_t *lexer_collect_char_lit(lexer_t *lexer)
+{
+    lexer_advance(lexer);
+    char *value = calloc(2, sizeof(char));
+    value[0] = lexer->c;
+    value[1] = '\0';
+    if (lexer->contents[lexer->i + 1] == 39)
+    {
+        lexer_advance(lexer);
+        lexer_advance(lexer);
+        return init_token(TOKEN_CHAR_LIT, value);
+    } else
+    {
+        lexer_advance(lexer);
+        lexer_advance(lexer);
+        return init_token(TOKEN_UNKNOWN, value);
+    }
 };
