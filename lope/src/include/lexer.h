@@ -26,7 +26,14 @@ token_t *lexer_get_next_token(lexer_t *lexer);
 // defining how to parse the string
 token_t *lexer_collect_string(lexer_t *lexer);
 
+// defining how to parse identifiers
 token_t *lexer_collect_id(lexer_t *lexer);
+
+// defining how to parse numbers
+token_t* lexer_collect_number(lexer_t *lexer);
+
+// helper method for getting two-character operators
+char* lexer_get_operator_ext_as_string(lexer_t *lexer);
 
 // helper method to call lexer advance lexer and return the token.
 //  takes in instance of token and lexer
@@ -35,7 +42,8 @@ token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token);
 char *lexer_get_current_char_as_string(lexer_t *lexer);
 int compare_to_keyword(char *identifier, char *keyword);
 token_t *lexer_collect_keyword(lexer_t *lexer);
+
 token_t *lexer_collect_comment_single(lexer_t *lexer);
 token_t *lexer_collect_comment_multi(lexer_t *lexer);
-
+token_t *lexer_collect_char_lit(lexer_t *lexer);
 #endif
