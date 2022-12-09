@@ -7,7 +7,14 @@ blah blah = "blah";
 
 @@@   dsadas
 
-numero CONST;
+numero CONST eunice_number = 12;
+linya CONST eunice_line = "eunice string";
+letra CONST eunice_letter = 'E';
+bolyan CONST eunice_bool = totoo;
+
+
+
+
 punto HERE;
 linya K;
 numero nOtCoNsTANT;
