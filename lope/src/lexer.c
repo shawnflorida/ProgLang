@@ -34,7 +34,7 @@ void lexer_advance(lexer_t *lexer)
 void lexer_skip_whitespace(lexer_t *lexer)
 {
     // 10 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == ' ' || lexer->c == '\n' || lexer->c == '\t')
+    while (lexer->c == ' ' || lexer->c == '\n' || lexer->c == '\t' || lexer->c == '\r')
     {
         // advance the lexer
         lexer_advance(lexer);
@@ -48,7 +48,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
         // for whitespace
-        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n') 
+        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n' || lexer->c == '\r' || lexer->c == EOF)  
         {
             lexer_skip_whitespace(lexer);
         }
@@ -530,8 +530,9 @@ token_t *lexer_collect_comment_single(lexer_t *lexer)
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
-    while (lexer->c != '\n')
+    while (isspace(lexer->c))
     {
+
         char *s = lexer_get_current_char_as_string(lexer);
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
         strcat(value, s); // append the current character to value string.
