@@ -500,8 +500,13 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while (isdigit(lexer->c))
+    int decimal_count = 0;
+    while (isdigit(lexer->c) || lexer->c == '.')
     {
+        if (lexer->c)
+        {
+            decimal_count++;
+        }
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
@@ -510,7 +515,14 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     }
     // advance the token.
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
-    return init_token(TOKEN_NUM, value);
+    
+    if (decimal_count < 2 && strlen(value) )
+    {
+        return init_token(TOKEN_NUM, value);
+    } else
+    {
+        return init_token(TOKEN_UNKNOWN, value);
+    }
 }
 
 token_t *lexer_collect_comment_single(lexer_t *lexer)
