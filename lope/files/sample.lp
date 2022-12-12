@@ -5,7 +5,7 @@ linya pangalan = "Yuan Urena";
 numero edad = 21;
 blah blah = "blah";
 
-@@@   dsadas
+@@@   dsadasda
 
 numero CONST eunice_number = 12;
 linya CONST eunice_line = "eunice string";
@@ -18,3 +18,5 @@ bolyan CONST eunice_bool = totoo;
 punto HERE;
 linya K;
 numero nOtCoNsTANT;
+
+nOtCoNsTANTdfgt;
