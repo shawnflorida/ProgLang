@@ -501,9 +501,10 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     value[0] = '\0';
     // while the character is an alphanumeric
     int decimal_count = 0;
-    while (isdigit(lexer->c) || lexer->c == '.')
+    int flag_invalid = 0;
+    while ((isdigit(lexer->c) == 1 || lexer->c == '.'))
     {
-        if (lexer->c)
+        if (lexer->c == '.')
         {
             decimal_count++;
         }
@@ -516,7 +517,7 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     // advance the token.
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
     
-    if (decimal_count < 2 && strlen(value) )
+    if (decimal_count <= 1)
     {
         return init_token(TOKEN_NUM, value);
     } else
