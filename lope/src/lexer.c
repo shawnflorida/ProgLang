@@ -530,7 +530,7 @@ token_t *lexer_collect_comment_single(lexer_t *lexer)
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
-    while (isspace(lexer->c))
+    while (lexer->c != '\n' && lexer->c != '\0')
     {
 
         char *s = lexer_get_current_char_as_string(lexer);
