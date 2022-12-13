@@ -193,7 +193,12 @@ int scanFile(lexer_t *lexer)
             if(token->type == 63)
                 printf("%d\t\t%s\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
             else
+            {
+                for(int i=0; i<strlen(token->value); i++)
+                    if(token->value[i] == '\n')
+                        token->value[i] = ' ';
                 printf("%d\t\t%s\t%s\t%s\n",  i, token_code[token->type], token_type[token->type], token->value);
+            }
         }
         else
             if(token->type == 25)
