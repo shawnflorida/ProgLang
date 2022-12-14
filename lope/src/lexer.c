@@ -34,7 +34,7 @@ void lexer_advance(lexer_t *lexer)
 void lexer_skip_whitespace(lexer_t *lexer)
 {
     // 10 is code for new line; meaning while lexer is a space or a new line:
-    while (lexer->c == ' ' || lexer->c == '\n' || lexer->c == '\t')
+    while (lexer->c == ' ' || lexer->c == '\n' || lexer->c == '\t' || lexer->c == '\r')
     {
         // advance the lexer
         lexer_advance(lexer);
@@ -48,7 +48,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
         // for whitespace
-        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n') 
+        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n' || lexer->c == '\r' || lexer->c == EOF)  
         {
             lexer_skip_whitespace(lexer);
         }
@@ -500,8 +500,14 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while (isdigit(lexer->c))
+    int decimal_count = 0;
+    int flag_invalid = 0;
+    while ((isdigit(lexer->c) == 1 || lexer->c == '.'))
     {
+        if (lexer->c == '.')
+        {
+            decimal_count++;
+        }
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
@@ -510,7 +516,14 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     }
     // advance the token.
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
-    return init_token(TOKEN_NUM, value);
+    
+    if (decimal_count <= 1)
+    {
+        return init_token(TOKEN_NUM, value);
+    } else
+    {
+        return init_token(TOKEN_UNKNOWN, value);
+    }
 }
 
 token_t *lexer_collect_comment_single(lexer_t *lexer)
@@ -518,8 +531,9 @@ token_t *lexer_collect_comment_single(lexer_t *lexer)
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
-    while (lexer->c != '\n')
+    while (lexer->c != '\n' && lexer->c != '\0')
     {
+
         char *s = lexer_get_current_char_as_string(lexer);
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
         strcat(value, s); // append the current character to value string.
