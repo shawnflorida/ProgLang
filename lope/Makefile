@@ -5,7 +5,7 @@ sources = $(wildcard src/*.c)
 #conpile into executable
 objects = $(sources:.c=.o)
 #for debugging purposes
-flags = -g -m64
+flags = -g
 
 $(exec): $(objects)
 	gcc $(objects) $(flags) -o $(exec)

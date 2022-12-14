@@ -1,6 +1,11 @@
 
 #comment by shawn
 #*multiple comment by shawn second line comment by shawn*#
+#*trying
+multiple
+comment
+with newline
+for display*#
 angkat package;
 dep func_name();
     balik 1;
