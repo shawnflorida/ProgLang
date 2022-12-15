@@ -6,6 +6,7 @@
 
 int *find_file()
 {
+    //file -> fseek -> from start to finish -> amount of character length to memory -> 
     fseek(input_ptr, 0L, SEEK_END);
     fileLen = ftell(input_ptr);
     fseek(input_ptr, 0L, SEEK_SET);
@@ -180,7 +181,9 @@ int scanFile(lexer_t *lexer)
         };
 
     printf("TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\n");
+    fprintf(output_ptr, "TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\n");
     printf("---------------------------------------------------------------------------------------------------------------------\n");
+    fprintf(output_ptr, "---------------------------------------------------------------------------------------------------------------------\n");
     int i = 1;
     while ((token = lexer_get_next_token(lexer)) != (void *)0)
     {
