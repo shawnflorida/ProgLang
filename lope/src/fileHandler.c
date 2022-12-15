@@ -106,7 +106,8 @@ int scanFile(lexer_t *lexer)
         "Multiple Comment",
         "Constant",
         "Comma Separator",
-        "Char literal"
+        "Char literal",
+        "Float literal"
         };
 
     const char *token_code[] = {
@@ -177,7 +178,8 @@ int scanFile(lexer_t *lexer)
         "TOKEN_COMMENT_VALUE_MULTI",
         "TOKEN_CAPITAL",
         "TOKEN_COMMA",
-        "TOKEN_CHAR_LIT"
+        "TOKEN_CHAR_LIT",
+        "TOKEN_FLOAT_LIT"
         };
 
     printf("TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\n");
