@@ -327,7 +327,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t')) //isalnum(lexer->c) || lexer->c == '_'
+    while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t') && isalnum(lexer->c) || lexer->c == '_') //isalnum(lexer->c) || lexer->c == '_'
     {
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
@@ -537,10 +537,12 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     }
     // advance the token.
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
-    
-    if (decimal_count <= 1)
+    if (decimal_count == 0)
     {
         return init_token(TOKEN_NUM, value);
+    } else if (decimal_count <= 1)
+    {
+        return init_token(TOKEN_FLOAT_LIT, value);
     } else
     {
         return init_token(TOKEN_UNKNOWN, value);
