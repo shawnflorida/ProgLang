@@ -185,27 +185,44 @@ int scanFile(lexer_t *lexer)
     while ((token = lexer_get_next_token(lexer)) != (void *)0)
     {
         if(token->type == 0 || token->type == 3 || token->type == 4)
+        {
             printf("%d\t\t%s\t\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+            fprintf(output_ptr, "%d\t\t%s\t\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+        }
         else if(token->type == 1 || token->type == 2 || token->type == 57 || token->type == 55 || token->type == 65 || token->type == 67 || token->type == 45 || token->type == 7 || token->type == 8 || token->type == 39 || token->type == 22)
+        {
             printf("%d\t\t%s\t\t\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+            fprintf(output_ptr, "%d\t\t%s\t\t\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+        }
         else if(token->type == 63 || token->type == 64)
         {
             if(token->type == 63)
+            {
                 printf("%d\t\t%s\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t%s\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+            }
             else
             {
                 for(int i=0; i<strlen(token->value); i++)
                     if(token->value[i] == '\n')
                         token->value[i] = ' ';
                 printf("%d\t\t%s\t%s\t%s\n",  i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t%s\t%s\t%s\n",  i, token_code[token->type], token_type[token->type], token->value);
             }
         }
         else
-            if(token->type == 25)
+            if(token->type == 25) 
+            {
                 printf("%d\t\t%s\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t%s\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+            }
             else
+            {
                 printf("%d\t\t%s\t\t\t%s\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t%s\t\t\t%s\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+            }
         printf("---------------------------------------------------------------------------------------------------------------------\n");
+        fprintf(output_ptr, "---------------------------------------------------------------------------------------------------------------------\n");
         i++;
     }
 }
