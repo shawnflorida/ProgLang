@@ -27,6 +27,8 @@
         "*.java": "javascript",
         "string.h": "c",
         "lexer.h": "c",
-        "addfile.h": "c"
+        "addfile.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c"
     }
 }

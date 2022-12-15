@@ -18,8 +18,7 @@ int main(int argc, char **argv)
         {
             printf("Error on reading argument %s\n", argv[i]);
             // lexer = init_lexer(
-            //     "linya error = \"may problema\";");
-
+            //"linya error = \"may problema\";");
             // // numero a = 1;
             // scanFile(lexer);
         }
