@@ -11,14 +11,17 @@ lexer_t *init_lexer(char *contents)
     // allocating memory for lexer struct into lexer memory
     lexer_t *lexer = calloc(1, sizeof(struct LEXER_STRUCT));
     // -> to access contents in structs; in this case, lexer can access contents, i , c in struct
+    //inputting of file contents into lexer struct
     lexer->contents = contents; // contents is file contents
     // current index
+    //assignments of index into lexer struct i
     lexer->i = 0;
     // current character
     lexer->c = contents[lexer->i];
     return lexer;
 }
 
+//lexer-advance -> iurong natin yung current index ng character sa loob ng contents
 void lexer_advance(lexer_t *lexer)
 {
 
@@ -31,6 +34,7 @@ void lexer_advance(lexer_t *lexer)
     }
 };
 
+//for skipping whitespace
 void lexer_skip_whitespace(lexer_t *lexer)
 {
     // 10 is code for new line; meaning while lexer is a space or a new line:
@@ -41,6 +45,9 @@ void lexer_skip_whitespace(lexer_t *lexer)
     }
 };
 
+// Special Characters 
+// check if current character is a special character and if the next struct index is also a special character
+// if so, return the token, and return the special character as a string
 token_t *lexer_get_next_token(lexer_t *lexer)
 {
     // while lexer is not a null and i is less than the lexer contents; meaning
@@ -53,6 +60,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             lexer_skip_whitespace(lexer);
         }
 
+        // -> for calling value or contents of struct
         switch (lexer->c)
         {
         // if the case is =, call lexer advance while carrying the token,
@@ -68,7 +76,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
                 return lexer_collect_comment_single(lexer);
                 /* return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_SINGLE, lexer_get_current_char_as_string(lexer))); */
             }
-        case '=':
+        case '=': //2times
             if (lexer->contents[lexer->i + 1] == '=') 
             {
                 return lexer_advance_with_token(lexer, init_token(TOKEN_EQ_TO, lexer_get_operator_ext_as_string(lexer)));
@@ -218,6 +226,8 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             return lexer_advance_with_token(lexer, init_token(TOKEN_COMMA, lexer_get_current_char_as_string(lexer)));
         default:
             // for KEYWORDS
+            // linya 
+            //c = i; 
             if (isalpha(lexer->c))
             {
                 return lexer_collect_keyword(lexer);
@@ -249,6 +259,8 @@ token_t *lexer_get_next_token(lexer_t *lexer)
 };
 
 
+// for string literals
+// if the current character is " call this function and advance the lexer
 token_t *lexer_collect_string(lexer_t *lexer)
 {
     // if the lexer collected a string, advance it to skip the "
@@ -257,6 +269,7 @@ token_t *lexer_collect_string(lexer_t *lexer)
     // value is the allocation of the memory for a string
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
+    //if the current character is not a ". then, everything between " ", make into a string. 
     while (lexer->c != '"')
     {
         char *s = lexer_get_current_char_as_string(lexer);
@@ -449,6 +462,9 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     }
     else
     {
+        // john  -> return as id
+        // j&&hn -> return as unknown or invalid
+        // JOHN = 6 -> return as CONSTNT
         // count the number of capital in the string
         int counter_caps = 0;
         int flag_illegal_symbol = 0;
@@ -495,6 +511,7 @@ int compare_to_keyword(char *identifier, char *keyword)
     return 1;
 }
 
+//converts digit into string
 token_t* lexer_collect_number(lexer_t *lexer) {
     // value is the allocation of the memory for a string
     char *value = calloc(1, sizeof(char));
@@ -548,15 +565,22 @@ token_t *lexer_collect_comment_multi(lexer_t *lexer)
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
-    while (!(lexer->c == '*' && lexer->contents[lexer->i + 1] == '#'))
+    while (!(lexer->c == '*' && lexer->contents[lexer->i + 1] == '#') && lexer->c != '\0')
     {
         char *s = lexer_get_current_char_as_string(lexer);
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
         strcat(value, s);
         lexer_advance(lexer);
     }
-    lexer_advance(lexer); //for *
-    lexer_advance(lexer); //for #
+    if (lexer->c == '*' && lexer->contents[lexer->i+1] == '#')
+    {
+        lexer_advance(lexer); //for *
+        lexer_advance(lexer); //for #
+    } else 
+    {
+        return init_token(TOKEN_UNKNOWN, value);
+    }
+    
     return init_token(TOKEN_COMMENT_VALUE_MULTI, value);
 };
 

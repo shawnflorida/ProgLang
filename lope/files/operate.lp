@@ -1,4 +1,8 @@
-def num yeezus(num x, num y) {
-    num kanye = 9999999.00;
-    lahad(kanye);
+#* def num main() {
+    numero x = 0;
+    x--;
+    num y = 24;
+    numero z = x+y;
+    lahad("ang numero ay %d", z);
+    balik 0;
 }
