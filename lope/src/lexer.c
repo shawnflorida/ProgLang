@@ -230,6 +230,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             //c = i; 
             if (isalpha(lexer->c))
             {
+                //is to append all characters that are not special characters and check if it is a keyword, noise, or reserved word
                 return lexer_collect_keyword(lexer);
             };
 
@@ -326,7 +327,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t') && isalnum(lexer->c) || lexer->c == '_')
+    while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t')) //isalnum(lexer->c) || lexer->c == '_'
     {
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
@@ -468,15 +469,18 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
         // count the number of capital in the string
         int counter_caps = 0;
         int flag_illegal_symbol = 0;
+        int counter_underscore = 0;
 
         for(int i=0; i<strlen(value); i++)
         {
+            if(value[i] == '_')
+                counter_underscore++;
             if(isupper(value[i]))
                 counter_caps++;
             else if ((isalnum(value[i]) == 0 && value[i] != '_') || isdigit(value[i]) == 1)
                 flag_illegal_symbol = 1;
         }
-        if(counter_caps == strlen(value))
+        if((counter_caps + counter_underscore) == strlen(value))
         {
             return init_token(TOKEN_CAPITAL, value);
         }
