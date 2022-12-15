@@ -548,15 +548,22 @@ token_t *lexer_collect_comment_multi(lexer_t *lexer)
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
-    while (!(lexer->c == '*' && lexer->contents[lexer->i + 1] == '#'))
+    while (!(lexer->c == '*' && lexer->contents[lexer->i + 1] == '#') && lexer->c != '\0')
     {
         char *s = lexer_get_current_char_as_string(lexer);
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
         strcat(value, s);
         lexer_advance(lexer);
     }
-    lexer_advance(lexer); //for *
-    lexer_advance(lexer); //for #
+    if (lexer->c == '*' && lexer->contents[lexer->i+1] == '#')
+    {
+        lexer_advance(lexer); //for *
+        lexer_advance(lexer); //for #
+    } else 
+    {
+        return init_token(TOKEN_UNKNOWN, value);
+    }
+    
     return init_token(TOKEN_COMMENT_VALUE_MULTI, value);
 };
 
