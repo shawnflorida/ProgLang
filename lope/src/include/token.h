@@ -90,6 +90,7 @@ typedef struct TOKEN_STRUCT
         TOKEN_CAPITAL,
         TOKEN_COMMA,
         TOKEN_CHAR_LIT,
+        TOKEN_FLOAT_LIT,
     } type;
 
     char *value;

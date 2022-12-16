@@ -5,8 +5,11 @@
 
 typedef struct LEXER_STRUCT
 {
+    //character - current character
     char c;
+    //curent position - file contents
     unsigned int i;
+    //contents - file contents
     char *contents;
 
 } lexer_t;
