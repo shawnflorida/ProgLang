@@ -357,7 +357,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_FOR, value);
     }
-    else if (compare_to_keyword(value, "dep") == 1)
+    else if (compare_to_keyword(value, "dep") == 1 && (strlen(value) == strlen("dep")))
     {
         return init_token(TOKEN_FUNCTION, value);
     }
@@ -425,7 +425,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_INT, value);
     }
-    else if (compare_to_keyword(value, "num") == 1)
+    else if (compare_to_keyword(value, "num") == 1 && (strlen(value) == strlen("num")))
     {
         return init_token(TOKEN_INT, value);
     }
@@ -437,7 +437,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_NULL, value);
     }
-    else if (compare_to_keyword(value, "punto") == 1)
+    else if (compare_to_keyword(value, "punto") == 1 && (strlen(value) == strlen("punto")))
     {
         return init_token(TOKEN_FLOAT, value);
     }
@@ -445,7 +445,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_FLOAT, value);
     }
-    else if (compare_to_keyword(value, "doble") == 1)
+    else if (compare_to_keyword(value, "doble") == 1 && (strlen(value) == strlen("doble")))
     {
         return init_token(TOKEN_DBL, value);
     }
@@ -457,7 +457,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_CHAR, value);
     }
-    else if (compare_to_keyword(value, "kar") == 1)
+    else if (compare_to_keyword(value, "kar") == 1 && (strlen(value) == strlen("kar")))
     {
         return init_token(TOKEN_CHAR, value);
     }
