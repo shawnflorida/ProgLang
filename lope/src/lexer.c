@@ -337,23 +337,23 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     }
     // advance the token.
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
-    if (compare_to_keyword(value, "kung") == 1)
+    if (compare_to_keyword(value, "kung") == 1 && (strlen(value) == strlen("kung")))
     {
         return init_token(TOKEN_IF, value);
     }
-    else if (compare_to_keyword(value, "habang") == 1)
+    else if (compare_to_keyword(value, "habang") == 1 && (strlen(value) == strlen("habang")))
     {
         return init_token(TOKEN_WHLE, value);
     }
-    else if (compare_to_keyword(value, "sakali") == 1)
+    else if (compare_to_keyword(value, "sakali") == 1 && (strlen(value) == strlen("sakali")))
     {
         return init_token(TOKEN_ELSE, value);
     }
-    else if (compare_to_keyword(value, "kundi") == 1)
+    else if (compare_to_keyword(value, "kundi") == 1 && (strlen(value) == strlen("kundi")))
     {
         return init_token(TOKEN_ELIF, value);
     }
-    else if (compare_to_keyword(value, "para") == 1)
+    else if (compare_to_keyword(value, "para") == 1 && (strlen(value) == strlen("para")))
     {
         return init_token(TOKEN_FOR, value);
     }
@@ -361,67 +361,67 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_FUNCTION, value);
     }
-    else if (compare_to_keyword(value, "depinisyon") == 1)
+    else if (compare_to_keyword(value, "depinisyon") == 1 && (strlen(value) == strlen("depinisyon")))
     {
         return init_token(TOKEN_FUNCTION, value);
     }
-    else if (compare_to_keyword(value, "angkat") == 1)
+    else if (compare_to_keyword(value, "angkat") == 1 && (strlen(value) == strlen("angkat")))
     {
         return init_token(TOKEN_IMPORT, value);
     }
-    else if (compare_to_keyword(value, "subukan") == 1)
+    else if (compare_to_keyword(value, "subukan") == 1 && (strlen(value) == strlen("subukan")))
     {
         return init_token(TOKEN_TRY, value);
     }
-    else if (compare_to_keyword(value, "maliban") == 1)
+    else if (compare_to_keyword(value, "maliban") == 1 && (strlen(value) == strlen("maliban")))
     {
         return init_token(TOKEN_EXCEPT, value);
     }
-    else if (compare_to_keyword(value, "wakas") == 1)
+    else if (compare_to_keyword(value, "wakas") == 1 && (strlen(value) == strlen("wakas")))
     {
         return init_token(TOKEN_FINALLY, value);
     }
-    else if (compare_to_keyword(value, "tigil") == 1)
+    else if (compare_to_keyword(value, "tigil") == 1 && (strlen(value) == strlen("tigil")))
     {
         return init_token(TOKEN_BREAK, value);
     }
-    else if (compare_to_keyword(value, "tuloy") == 1)
+    else if (compare_to_keyword(value, "tuloy") == 1 && (strlen(value) == strlen("tuloy")))
     {
         return init_token(TOKEN_CONTINUE, value);
     }
-    else if (compare_to_keyword(value, "balik") == 1)
+    else if (compare_to_keyword(value, "balik") == 1 && (strlen(value) == strlen("balik")))
     {
         return init_token(TOKEN_RETURN, value);
     }
-    else if (compare_to_keyword(value, "at") == 1)
+    else if (compare_to_keyword(value, "at") == 1 && (strlen(value) == strlen("at")))
     {
         return init_token(TOKEN_AND, value);
     }
-    else if (compare_to_keyword(value, "o") == 1)
+    else if (compare_to_keyword(value, "o") == 1 && (strlen(value) == strlen("o")))
     {
         return init_token(TOKEN_OR, value);
     }
-    else if (compare_to_keyword(value, "nasa") == 1)
+    else if (compare_to_keyword(value, "nasa") == 1 && (strlen(value) == strlen("nasa")))
     {
         return init_token(TOKEN_IN, value);
     }
-    else if (compare_to_keyword(value, "lahat") == 1)
+    else if (compare_to_keyword(value, "lahat") == 1 && (strlen(value) == strlen("lahat")))
     {
         return init_token(TOKEN_GLOBAL, value);
     }
-    else if (compare_to_keyword(value, "bolyan") == 1)
+    else if (compare_to_keyword(value, "bolyan") == 1 && (strlen(value) == strlen("bolyan")))
     {
         return init_token(TOKEN_BOOL, value);
     }
-    else if (compare_to_keyword(value, "totoo") == 1)
+    else if (compare_to_keyword(value, "totoo") == 1 && (strlen(value) == strlen("totoo")))
     {
         return init_token(TOKEN_BOOLT, value);
     }
-    else if (compare_to_keyword(value, "mali") == 1)
+    else if (compare_to_keyword(value, "mali") == 1 && (strlen(value) == strlen("mali")))
     {
         return init_token(TOKEN_BOOLM, value);
     }
-    else if (compare_to_keyword(value, "numero") == 1)
+    else if (compare_to_keyword(value, "numero") == 1 && (strlen(value) == strlen("numero")))
     {
         return init_token(TOKEN_INT, value);
     }
@@ -429,11 +429,11 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_INT, value);
     }
-    else if (compare_to_keyword(value, "linya") == 1)
+    else if (compare_to_keyword(value, "linya") == 1 && (strlen(value) == strlen("linya")))
     {
         return init_token(TOKEN_STR, value);
     }
-    else if (compare_to_keyword(value, "wala") == 1)
+    else if (compare_to_keyword(value, "wala") == 1 && (strlen(value) == strlen("wala")))
     {
         return init_token(TOKEN_NULL, value);
     }
@@ -441,7 +441,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_FLOAT, value);
     }
-    else if (compare_to_keyword(value, "puntonumero") == 1)
+    else if (compare_to_keyword(value, "puntonumero") == 1 && (strlen(value) == strlen("puntonumero")))
     {
         return init_token(TOKEN_FLOAT, value);
     }
@@ -449,11 +449,11 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_DBL, value);
     }
-    else if (compare_to_keyword(value, "doblenumero") == 1)
+    else if (compare_to_keyword(value, "doblenumero") == 1 && (strlen(value) == strlen("doblenumero")))
     {
         return init_token(TOKEN_DBL, value);
     }
-    else if (compare_to_keyword(value, "karakter") == 1)
+    else if (compare_to_keyword(value, "karakter") == 1 && (strlen(value) == strlen("karakter")))
     {
         return init_token(TOKEN_CHAR, value);
     }
