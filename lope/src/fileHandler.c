@@ -179,7 +179,6 @@ int scanFile(lexer_t *lexer)
         "TOKEN_CAPITAL",
         "TOKEN_COMMA",
         "TOKEN_CHAR_LIT",
-        "TOKEN_FLOAT_LIT"
         };
 
     printf("TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\n");
