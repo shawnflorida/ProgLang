@@ -461,6 +461,14 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     {
         return init_token(TOKEN_CHAR, value);
     }
+    else if (compare_to_keyword(value, "lahad") == 1 && (strlen(value) == strlen("lahad")))
+    {
+        return init_token(TOKEN_PRINT, value);
+    }
+    else if (compare_to_keyword(value, "kuha") == 1 && (strlen(value) == strlen("kuha")))
+    {
+        return init_token(TOKEN_SCAN, value);
+    }
     else
     {
         // john  -> return as id
