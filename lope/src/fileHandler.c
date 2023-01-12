@@ -189,8 +189,8 @@ int scanFile(lexer_t *lexer)
         "TOKEN_FROM"
         };
 
-    printf("TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\n");
-    fprintf(output_ptr, "TOKEN-NUMBER\tTOKEN-CODE\t\t\t\t\tTOKEN-INFO\t\t\tLEXEME\n");
+    printf("TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\t\t\tPOS.(LINE, CH)\n");
+    fprintf(output_ptr, "TOKEN-NUMBER\tTOKEN-CODE\t\t\t\t\tTOKEN-INFO\t\t\tLEXEME\t\t\tPOS.(LINE, CH)\n");
 
     printf("---------------------------------------------------------------------------------------------------------------------\n");
     fprintf(output_ptr, "---------------------------------------------------------------------------------------------------------------------\n");
@@ -199,85 +199,85 @@ int scanFile(lexer_t *lexer)
     {
         if(token->type == 0 || token->type == 3 || token->type == 4)
         {
-            printf("%d\t\t%s\t\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+            printf("%d\t\t%s\t\t\t%s\t%s\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             if(token->type == 3 || token->type == 4)
             {
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
             else 
             {
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
         }
         else if(token->type == 1 || token->type == 2 || token->type == 57 || token->type == 55 || token->type == 65 || token->type == 67 || token->type == 45 || token->type == 7 || token->type == 8 || token->type == 39 || token->type == 22)
         {
-            printf("%d\t\t%s\t\t\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+            printf("%d\t\t%s\t\t\t%s\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             if(token->type == 1 || token->type == 7 || token->type == 8)
             {
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
             else if(token->type == 22)
             {
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
             else if(token->type == 2 || token->type == 55)
             {
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
             else if(token->type == 65 || token->type == 39 || token->type == 45)
             {
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
             else 
             {
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
         }
         else if(token->type == 63 || token->type == 64)
         {
             if(token->type == 63)
             {
-                printf("%d\t\t%s\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
-                fprintf(output_ptr, "%d\t\t\t\t%s\t%s\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                printf("%d\t\t%s\t%s\t\t%s\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t%s\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
             else
             {
                 for(int i=0; i<strlen(token->value); i++)
                     if(token->value[i] == '\n')
                         token->value[i] = ' ';
-                printf("%d\t\t%s\t%s\t%s\n",  i, token_code[token->type], token_type[token->type], token->value);
-                fprintf(output_ptr, "%d\t\t\t\t%s\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                printf("%d\t\t%s\t%s\t%s\t[%d, %d] \n",  i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t%s\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
         }
         else
         {
             if(token->type == 25)
             {
-                printf("%d\t\t%s\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
-                fprintf(output_ptr, "%d\t\t\t\t%s\t\t%s\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                printf("%d\t\t%s\t\t%s\t%s\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
+                fprintf(output_ptr, "%d\t\t\t\t%s\t\t%s\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
             }
             else
             {
-                printf("%d\t\t%s\t\t\t%s\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                printf("%d\t\t%s\t\t\t%s\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
                 if(token->type == 62 || token->type == 40 || token->type == 46 || token->type == 42 || token->type == 50)
                 {
-                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t%s\t\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
                 }
                 else if(token->type == 37)
                 {
-                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
                 }
                 else if(token->type == 41 || token->type == 38)
                 {
-                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
                 }
                 else if(token->type == 47 || token->type == 48 || token->type == 49) 
                 {
-                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t\t%s\t\t\t[%d, %d]\n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
                 }
                 else 
                 {
-                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t%s\n", i, token_code[token->type], token_type[token->type], token->value);
+                    fprintf(output_ptr, "%d\t\t\t\t%s\t\t\t\t\t%s\t\t\t\t%s\t\t\t[%d, %d] \n", i, token_code[token->type], token_type[token->type], token->value, token->lpos, token->cpos);
                 }
             }
         }

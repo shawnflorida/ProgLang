@@ -9,6 +9,8 @@ typedef struct LEXER_STRUCT
     char c;
     //curent position - file contents
     unsigned int i;
+    unsigned int l;
+    unsigned int lc;
     //contents - file contents
     char *contents;
 

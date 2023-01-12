@@ -16,6 +16,10 @@ lexer_t *init_lexer(char *contents)
     // current index
     //assignments of index into lexer struct i
     lexer->i = 0;
+    // current line
+    lexer->l = 1;
+    // current char in-line
+    lexer->lc = 1;
     // current character
     lexer->c = contents[lexer->i];
     return lexer;
@@ -29,6 +33,7 @@ void lexer_advance(lexer_t *lexer)
     // add 1 to index and character should be equal to lexer's content indexed by the current lexer
     if ((lexer->c != '\0' || lexer->c != ' ' || lexer->c != '\t') && lexer->i < strlen(lexer->contents))
     {
+        lexer->lc += 1;
         lexer->i += 1;
         lexer->c = lexer->contents[lexer->i];
     }
@@ -40,6 +45,10 @@ void lexer_skip_whitespace(lexer_t *lexer)
     // 10 is code for new line; meaning while lexer is a space or a new line:
     while (lexer->c == ' ' || lexer->c == '\n' || lexer->c == '\t' || lexer->c == '\r')
     {
+        if (lexer->c == '\n') {
+            lexer->lc = 0;
+            lexer->l += 1;
+        }
         // advance the lexer
         lexer_advance(lexer);
     }
@@ -56,8 +65,11 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     {
         if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n' || lexer->c == '\r' || lexer->c == '\f')
         {
+            if (lexer->c == '\n')
+                lexer->lc = 0;
             lexer_skip_whitespace(lexer);
         }
+        int startPos = lexer->lc;
         // -> for calling value or contents of struct
         switch (lexer->c)
         {
@@ -77,151 +89,151 @@ token_t *lexer_get_next_token(lexer_t *lexer)
         case '=': //2times
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_EQ_TO, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_EQ_TO, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case ';':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_SEMI, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_SEMI, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case '(':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_LPAREN, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LPAREN, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case ')':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case '{':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_RBRACE, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_RBRACE, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case '}':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_LBRACE, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LBRACE, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case '[':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_RBRACKET, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_RBRACKET, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case ']':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_LBRACKET, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LBRACKET, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case '<':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_LS_THAN_EQ, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_LS_THAN_EQ, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '>':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_GR_THAN_EQ, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_GR_THAN_EQ, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_GREATER, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_GREATER, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '+':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_ADD_ASGN, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_ADD_ASGN, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else if (lexer->contents[lexer->i + 1] == '+') {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_INCR, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_INCR, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_ADD, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_ADD, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '-':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_SUB_ASGN, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_SUB_ASGN, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else if (lexer->contents[lexer->i + 1] == '-')
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_DECR, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_DECR, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_SUB, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_SUB, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '/':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_DIV_ASGN, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_DIV_ASGN, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_DIV, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_DIV, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '~':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_INTDIV_ASGN, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_INTDIV_ASGN, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_INTDIV, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_INTDIV, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '*':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_MULT_ASGN, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_MULT_ASGN, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else if (lexer->contents[lexer->i + 1] == '#')
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_MULTI, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_COMMENT_VALUE_MULTI, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_MULT, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '%':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_MOD_ASGN, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_MOD_ASGN, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_LESS, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '^':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_EXP, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_EXP, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case '|':
             if (lexer->contents[lexer-> i + 1] == '|')
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_OR, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_OR, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '&':
             if (lexer->contents[lexer-> i + 1] == '&')
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_AND, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_AND, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case '!':
             if (lexer->contents[lexer->i + 1] == '=') 
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_NOT_EQ, lexer_get_operator_ext_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_NOT_EQ, lexer_get_operator_ext_as_string(lexer), lexer->l, startPos));
             } else
             {
-                return lexer_advance_with_token(lexer, init_token(TOKEN_NEGATE, lexer_get_current_char_as_string(lexer)));
+                return lexer_advance_with_token(lexer, init_token(TOKEN_NEGATE, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             }
             break;
         case ':':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_COLON, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_COLON, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case '_':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_UNDERSCORE, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_UNDERSCORE, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         case ',':
-            return lexer_advance_with_token(lexer, init_token(TOKEN_COMMA, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_COMMA, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
         default:
             // for KEYWORDS
             // linya 
@@ -253,7 +265,7 @@ token_t *lexer_get_next_token(lexer_t *lexer)
                 break;
             }
             // Unknown
-            return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
+            return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer), lexer->l, startPos));
             break;
         }
     }
@@ -265,9 +277,9 @@ token_t *lexer_get_next_token(lexer_t *lexer)
 // if the current character is " call this function and advance the lexer
 token_t *lexer_collect_string(lexer_t *lexer)
 {
+    int startPos = lexer->lc;
     // if the lexer collected a string, advance it to skip the "
     lexer_advance(lexer);
-
     // value is the allocation of the memory for a string
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
@@ -283,7 +295,7 @@ token_t *lexer_collect_string(lexer_t *lexer)
     lexer_advance(lexer);
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
 
-    return init_token(TOKEN_STRING, value);
+    return init_token(TOKEN_STRING, value, lexer->l, startPos-1);
 };
 
 char* lexer_get_operator_ext_as_string(lexer_t *lexer)
@@ -303,6 +315,7 @@ token_t *lexer_collect_id(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
+    int startPos = lexer->lc;
     while (isalpha(lexer->c))
     {
         char *s = lexer_get_current_char_as_string(lexer);
@@ -313,7 +326,7 @@ token_t *lexer_collect_id(lexer_t *lexer)
     }
 
 
-    return init_token(TOKEN_ID, value);
+    return init_token(TOKEN_ID, value, lexer->l, startPos);
 }
 
 token_t *lexer_advance_with_token(lexer_t *lexer, token_t *token)
@@ -327,6 +340,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     // value is the allocation of the memory for a string
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
+    int startPos = lexer->lc;
     // while the character is an alphanumeric
     while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t' && lexer->c != '\0') && isalnum(lexer->c) || lexer->c == '_') //isalnum(lexer->c) || lexer->c == '_'
     {
@@ -346,7 +360,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                     if (value[4] == 'n') {
                         if (value[5] == 'g') {
                             if (value[6] == '\0') 
-                                return init_token(TOKEN_WHLE, value);
+                                return init_token(TOKEN_WHLE, value, lexer->l, startPos);
                             else 
                                 goto SCAN_INDENTIFIER;
                         } else goto SCAN_INDENTIFIER;
@@ -363,7 +377,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                     if (value[4] == 'l') {
                         if (value[5] == 'i') {
                             if (value[6] == '\0') 
-                                return init_token(TOKEN_ELSE, value);
+                                return init_token(TOKEN_ELSE, value, lexer->l, startPos);
                             else 
                                 goto SCAN_INDENTIFIER;
                         } else goto SCAN_INDENTIFIER;
@@ -377,7 +391,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                         if (value[5] == 'a'){
                             if (value[6] == 'n'){
                                 if (value[7] == '\0')
-                                    return init_token(TOKEN_TRY, value);
+                                    return init_token(TOKEN_TRY, value, lexer->l, startPos);
                                 else 
                                     goto SCAN_INDENTIFIER;
                             } else goto SCAN_INDENTIFIER;
@@ -393,7 +407,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
             if (value[2] == 'r') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_FOR, value);
+                        return init_token(TOKEN_FOR, value, lexer->l, startPos);
                     else 
                         goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER;
@@ -409,7 +423,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                                         if (value[9] == 'r') {
                                             if (value[10] == 'o') {
                                                 if (value[11] == '\0')
-                                                    return init_token(TOKEN_FLOAT, value);
+                                                    return init_token(TOKEN_FLOAT, value, lexer->l, startPos);
                                                 else 
                                                     goto SCAN_INDENTIFIER;
                                             } else goto SCAN_INDENTIFIER;
@@ -418,7 +432,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                                 } else goto SCAN_INDENTIFIER;
                             } else goto SCAN_INDENTIFIER;
                         } else if (value[5] == '\0') {
-                            return init_token(TOKEN_FLOAT, value);
+                            return init_token(TOKEN_FLOAT, value, lexer->l, startPos);
                         } else goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER;
@@ -432,11 +446,11 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if(value[3] == 'a') {
                     if(value[4] == 'd') {
                         if(value[5] == '\0') 
-                            return init_token(TOKEN_PRINT, value);
+                            return init_token(TOKEN_PRINT, value, lexer->l, startPos);
                     }
                     else if(value[4] == 't') {
                         if(value[5] == '\0') 
-                            return init_token(TOKEN_GLOBAL, value);
+                            return init_token(TOKEN_GLOBAL, value, lexer->l, startPos);
                     } else goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER;
             } else goto SCAN_INDENTIFIER;
@@ -445,7 +459,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'y') {
                     if (value[4] == 'a') {
                         if(value[5] == '\0') 
-                            return init_token(TOKEN_STR, value);
+                            return init_token(TOKEN_STR, value, lexer->l, startPos);
                         else 
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -460,7 +474,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if(value[3] == 'o') {
                     if(value[4] == 'o') {
                         if(value[5] == '\0') 
-                            return init_token(TOKEN_BOOLT, value);
+                            return init_token(TOKEN_BOOLT, value, lexer->l, startPos);
                         else
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -471,7 +485,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'i') {
                     if (value[4] == 'l') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_BREAK, value);
+                            return init_token(TOKEN_BREAK, value, lexer->l, startPos);
                         else
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -482,7 +496,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'o') {
                     if (value[4] == 'y') {
                         if (value[5] == '\0') 
-                            return init_token(TOKEN_CONTINUE, value);
+                            return init_token(TOKEN_CONTINUE, value, lexer->l, startPos);
                         else 
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -498,7 +512,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                     if(value[4] == 'r') {
                         if(value[5] == 'o') {
                             if(value[6] == '\0') 
-                                return init_token(TOKEN_INT, value);
+                                return init_token(TOKEN_INT, value, lexer->l, startPos);
                             else 
                                 goto SCAN_INDENTIFIER;
                         } else 
@@ -506,7 +520,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                     } else 
                         goto SCAN_INDENTIFIER; 
                 } else if (value[3] == '\0') {
-                    return init_token(TOKEN_INT, value);
+                    return init_token(TOKEN_INT, value, lexer->l, startPos);
                 } else 
                     goto SCAN_INDENTIFIER;
             } else 
@@ -515,7 +529,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
             if (value[2] == 's') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0') {
-                        return init_token(TOKEN_IN, value);
+                        return init_token(TOKEN_IN, value, lexer->l, startPos);
                     } else 
                         goto SCAN_INDENTIFIER;        
                 } else 
@@ -535,7 +549,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                             if (value[6] == 'e') {
                                 if (value[7] == 'r') {
                                     if (value[8] == '\0') {
-                                        return init_token(TOKEN_CHAR, value);
+                                        return init_token(TOKEN_CHAR, value, lexer->l, startPos);
                                     } else 
                                         goto SCAN_INDENTIFIER;
                                 } else 
@@ -547,7 +561,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                     } else 
                         goto SCAN_INDENTIFIER;
                 } else if (value[3] == '\0') {
-                    return init_token(TOKEN_CHAR, value);
+                    return init_token(TOKEN_CHAR, value, lexer->l, startPos);
                 } else goto SCAN_INDENTIFIER;
             } else goto SCAN_INDENTIFIER;
         } else if (value[1] == 'u') {
@@ -555,7 +569,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'd') {
                     if (value[4] == 'i') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_ELIF, value);
+                            return init_token(TOKEN_ELIF, value, lexer->l, startPos);
                         else 
                             goto SCAN_INDENTIFIER;
                     } else 
@@ -563,14 +577,14 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 }
                 else if (value[3] == 'g') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_IF, value);
+                        return init_token(TOKEN_IF, value, lexer->l, startPos);
                     else
                         goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER; 
             } else if (value[2] == 'h') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_SCAN, value);
+                        return init_token(TOKEN_SCAN, value, lexer->l, startPos);
                     else 
                         goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER;
@@ -589,7 +603,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                                     if (value[8] == 'o'){
                                         if (value[9] == 'n'){
                                             if (value[10] == '\0')
-                                                return init_token(TOKEN_FUNCTION, value);
+                                                return init_token(TOKEN_FUNCTION, value, lexer->l, startPos);
                                             else
                                                 goto SCAN_INDENTIFIER;
                                         } else goto SCAN_INDENTIFIER;
@@ -599,7 +613,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                         } else goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER; 
                 } else if(value[3] == '\0'){
-                    return init_token(TOKEN_FUNCTION, value);
+                    return init_token(TOKEN_FUNCTION, value, lexer->l, startPos);
                 } else goto SCAN_INDENTIFIER;
             } else goto SCAN_INDENTIFIER;
         }
@@ -614,7 +628,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                                         if (value[9] == 'r') {
                                             if (value[10] == 'o') {
                                                 if (value[11] == '\0'){
-                                                    return init_token(TOKEN_DBL, value);
+                                                    return init_token(TOKEN_DBL, value, lexer->l, startPos);
                                                 } else
                                                     goto SCAN_INDENTIFIER;
                                             } else goto SCAN_INDENTIFIER;
@@ -623,7 +637,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                                 } else goto SCAN_INDENTIFIER;
                             } else goto SCAN_INDENTIFIER;
                         } else if (value[5] == '\0') 
-                            return init_token(TOKEN_DBL, value);
+                            return init_token(TOKEN_DBL, value, lexer->l, startPos);
                         else 
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -639,7 +653,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                     if (value[4] == 'a'){
                         if (value[5] == 't'){
                             if (value[6] == '\0')
-                                return init_token(TOKEN_IMPORT, value);
+                                return init_token(TOKEN_IMPORT, value, lexer->l, startPos);
                             else
                                 goto SCAN_INDENTIFIER;
                         } else goto SCAN_INDENTIFIER;
@@ -648,7 +662,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
             } else goto SCAN_INDENTIFIER;
         } else if (value[1] == 't') {
             if (value[2] == '\0')
-                return init_token(TOKEN_AND, value);
+                return init_token(TOKEN_AND, value, lexer->l, startPos);
             else
                 goto SCAN_INDENTIFIER;
         } else goto SCAN_INDENTIFIER;
@@ -662,12 +676,12 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                         if (value[5] == 'a'){
                             if (value[6] == 'n'){
                                 if (value[7] == '\0'){
-                                    return init_token(TOKEN_EXCEPT, value);
+                                    return init_token(TOKEN_EXCEPT, value, lexer->l, startPos);
                                 } else goto SCAN_INDENTIFIER;
                             } else goto SCAN_INDENTIFIER;
                         } else goto SCAN_INDENTIFIER;
                     } else if (value[4] == '\0') {
-                        return init_token(TOKEN_BOOLM, value);
+                        return init_token(TOKEN_BOOLM, value, lexer->l, startPos);
                     } else 
                         goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER;
@@ -676,7 +690,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
             if (value[2] == 'l') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0') {
-                        return init_token(TOKEN_FROM, value);
+                        return init_token(TOKEN_FROM, value, lexer->l, startPos);
                     } else
                         goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER; 
@@ -690,7 +704,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'a') {
                     if (value[4] == 's'){
                         if (value[5] == '\0'){
-                            return init_token(TOKEN_FINALLY, value);
+                            return init_token(TOKEN_FINALLY, value, lexer->l, startPos);
                         } else
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -698,7 +712,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
             } else if (value[2] == 'l') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_NULL, value);
+                        return init_token(TOKEN_NULL, value, lexer->l, startPos);
                     else 
                         goto SCAN_INDENTIFIER;
                 } else goto SCAN_INDENTIFIER;
@@ -712,7 +726,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'a') {
                     if (value[4] == 'd') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_PRINT, value);
+                            return init_token(TOKEN_PRINT, value, lexer->l, startPos);
                         else
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -727,7 +741,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'i') {
                     if (value[4] == 'l') {
                         if (value[5] == '\0') {
-                            return init_token(TOKEN_BREAK, value);
+                            return init_token(TOKEN_BREAK, value, lexer->l, startPos);
                         } else
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -738,7 +752,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'o') {
                     if (value[4] == 'y') {
                         if (value[5] == '\0') {
-                            return init_token(TOKEN_CONTINUE, value);
+                            return init_token(TOKEN_CONTINUE, value, lexer->l, startPos);
                         } else 
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -753,7 +767,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'i') {
                     if (value[4] == 'k') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_RETURN, value);
+                            return init_token(TOKEN_RETURN, value, lexer->l, startPos);
                         else 
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -765,7 +779,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                     if(value[4] == 'a') {
                         if(value[5] == 'n') {
                             if(value[6] == '\0') 
-                                return init_token(TOKEN_BOOL, value);
+                                return init_token(TOKEN_BOOL, value, lexer->l, startPos);
                             else
                                 goto SCAN_INDENTIFIER;
                         } else goto SCAN_INDENTIFIER;
@@ -777,7 +791,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     //TOKEN_OR - O
     else if (value[0]== 'o'){
         if (value[1] == '\0') 
-            return init_token(TOKEN_OR, value);
+            return init_token(TOKEN_OR, value, lexer->l, startPos);
         else 
             goto SCAN_INDENTIFIER;
     }
@@ -788,7 +802,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
                 if (value[3] == 'r') {
                     if (value[4] == 'a') {
                         if (value[5] == '\0') 
-                            return init_token(TOKEN_DEL, value);
+                            return init_token(TOKEN_DEL, value, lexer->l, startPos);
                         else 
                             goto SCAN_INDENTIFIER;
                     } else goto SCAN_INDENTIFIER;
@@ -818,12 +832,12 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
         }
         if((counter_caps + counter_underscore) == strlen(value))
         {
-            return init_token(TOKEN_CAPITAL, value);
+            return init_token(TOKEN_CAPITAL, value, lexer->l, startPos);
         }
         if (flag_illegal_symbol == 0)   
-            return init_token(TOKEN_ID, value);
+            return init_token(TOKEN_ID, value, lexer->l, startPos);
         else
-            return init_token(TOKEN_UNKNOWN, value);
+            return init_token(TOKEN_UNKNOWN, value, lexer->l, startPos);
     }
 }
 
@@ -859,6 +873,7 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     // while the character is an alphanumeric
     int decimal_count = 0;
     int flag_invalid = 0;
+    int startPos = lexer->lc;
     while ((isdigit(lexer->c) == 1 || lexer->c == '.'))
     {
         if (lexer->c == '.')
@@ -875,18 +890,19 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
     if (decimal_count == 0)
     {
-        return init_token(TOKEN_NUM, value);
+        return init_token(TOKEN_NUM, value, lexer->l, startPos);
     } else if (decimal_count <= 1)
     {
-        return init_token(TOKEN_FLOAT_LIT, value);
+        return init_token(TOKEN_FLOAT_LIT, value, lexer->l, startPos);
     } else
     {
-        return init_token(TOKEN_UNKNOWN, value);
+        return init_token(TOKEN_UNKNOWN, value, lexer->l, startPos);
     }
 }
 
 token_t *lexer_collect_comment_single(lexer_t *lexer)
 {
+    int startPos = lexer->lc;
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
@@ -898,11 +914,12 @@ token_t *lexer_collect_comment_single(lexer_t *lexer)
         strcat(value, s); // append the current character to value string.
         lexer_advance(lexer);
     }
-    return init_token(TOKEN_COMMENT_VALUE_SINGLE, value);
+    return init_token(TOKEN_COMMENT_VALUE_SINGLE, value, lexer->l, startPos-1);
 };
 
 token_t *lexer_collect_comment_multi(lexer_t *lexer)
 {
+    int startPos = lexer->lc;
     lexer_advance(lexer);
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
@@ -920,14 +937,15 @@ token_t *lexer_collect_comment_multi(lexer_t *lexer)
         lexer_advance(lexer); //for #
     } else 
     {
-        return init_token(TOKEN_UNKNOWN, value);
+        return init_token(TOKEN_UNKNOWN, value, lexer->l, startPos-1);
     }
     
-    return init_token(TOKEN_COMMENT_VALUE_MULTI, value);
+    return init_token(TOKEN_COMMENT_VALUE_MULTI, value, lexer->l, startPos-1);
 };
 
 token_t *lexer_collect_char_lit(lexer_t *lexer)
 {
+    int startPos = lexer->lc;
     lexer_advance(lexer);
     char *value = calloc(2, sizeof(char));
     value[0] = lexer->c;
@@ -936,12 +954,12 @@ token_t *lexer_collect_char_lit(lexer_t *lexer)
     {
         lexer_advance(lexer);
         lexer_advance(lexer);
-        return init_token(TOKEN_CHAR_LIT, value);
+        return init_token(TOKEN_CHAR_LIT, value, lexer->l, startPos);
     } else
     {
         lexer_advance(lexer);
         lexer_advance(lexer);
-        return init_token(TOKEN_UNKNOWN, value);
+        return init_token(TOKEN_UNKNOWN, value, lexer->l, startPos);
     }
 };
 /* 
