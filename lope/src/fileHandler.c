@@ -109,7 +109,9 @@ int scanFile(lexer_t *lexer)
         "Char literal",
         "Float literal",
         "Scan",
-        "Print"
+        "Print",
+        "Delete",
+        "From"
         };
 
     const char *token_code[] = {
@@ -182,8 +184,10 @@ int scanFile(lexer_t *lexer)
         "TOKEN_COMMA",
         "TOKEN_CHAR_LIT",
         "TOKEN_FLOAT_LIT",
+        "TOKEN_PRINT",
         "TOKEN_SCAN",
-        "TOKEN_PRINT"
+        "TOKEN_DEL",
+        "TOKEN_FROM"
         };
 
     printf("TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\n");

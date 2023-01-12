@@ -54,12 +54,10 @@ token_t *lexer_get_next_token(lexer_t *lexer)
     // there are tokens that are needed to be parsed.
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents))
     {
-        // for whitespace
-        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n' || lexer->c == '\r' || lexer->c == EOF)  
+        if (lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n' || lexer->c == '\r' || lexer->c == '\f')
         {
             lexer_skip_whitespace(lexer);
         }
-
         // -> for calling value or contents of struct
         switch (lexer->c)
         {
@@ -250,7 +248,10 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             {
                 return lexer_collect_char_lit(lexer);
             }
-
+            if (lexer->c == '\0')
+            {
+                break;
+            }
             // Unknown
             return lexer_advance_with_token(lexer, init_token(TOKEN_UNKNOWN, lexer_get_current_char_as_string(lexer)));
             break;
@@ -327,7 +328,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
     // while the character is an alphanumeric
-    while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t') && isalnum(lexer->c) || lexer->c == '_') //isalnum(lexer->c) || lexer->c == '_'
+    while ((lexer->c != ' ' && lexer->c != '\n' && lexer->c != '\t' && lexer->c != '\0') && isalnum(lexer->c) || lexer->c == '_') //isalnum(lexer->c) || lexer->c == '_'
     {
         char *s = lexer_get_current_char_as_string(lexer);
         // reallocate the string length of the value by adding the length of s to update it and fit the string.
@@ -337,140 +338,467 @@ token_t *lexer_collect_keyword(lexer_t *lexer)
     }
     // advance the token.
     // return the value by calling the init_token function wherein it will be a TOKEN_STRING as type and added into the struct.
-    if (compare_to_keyword(value, "kung") == 1 && (strlen(value) == strlen("kung")))
-    {
-        return init_token(TOKEN_IF, value);
+    //TOKEN_WHILE - HABANG
+    if (value[0]== 'h') {
+        if (value[1] == 'a') {
+            if (value[2] == 'b') {
+                if (value[3] == 'a') {
+                    if (value[4] == 'n') {
+                        if (value[5] == 'g') {
+                            if (value[6] == '\0') 
+                                return init_token(TOKEN_WHLE, value);
+                            else 
+                                goto SCAN_INDENTIFIER;
+                        } else goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "habang") == 1 && (strlen(value) == strlen("habang")))
-    {
-        return init_token(TOKEN_WHLE, value);
+    //TOKEN_ELSE - SAKALI | //TOKEN_TRY - SUBUKAN
+    else if (value[0]== 's') {
+        if (value[1] == 'a') {
+            if (value[2] == 'k') {
+                if (value[3] == 'a') {
+                    if (value[4] == 'l') {
+                        if (value[5] == 'i') {
+                            if (value[6] == '\0') 
+                                return init_token(TOKEN_ELSE, value);
+                            else 
+                                goto SCAN_INDENTIFIER;
+                        } else goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'u') {
+            if (value[2] == 'b') {
+                if (value[3] == 'u') {
+                    if (value[4] == 'k') {
+                        if (value[5] == 'a'){
+                            if (value[6] == 'n'){
+                                if (value[7] == '\0')
+                                    return init_token(TOKEN_TRY, value);
+                                else 
+                                    goto SCAN_INDENTIFIER;
+                            } else goto SCAN_INDENTIFIER;
+                        } else goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "sakali") == 1 && (strlen(value) == strlen("sakali")))
-    {
-        return init_token(TOKEN_ELSE, value);
+    //TOKEN_FOR - PARA | //TOKEN_FLOAT - PUNTONUMERO/PUNTO
+    else if (value[0]== 'p') {
+        if (value[1] == 'a') {
+            if (value[2] == 'r') {
+                if (value[3] == 'a') {
+                    if (value[4] == '\0')
+                        return init_token(TOKEN_FOR, value);
+                    else 
+                        goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'u') {
+            if (value[2] == 'n') {
+                if (value[3] == 't') {
+                    if (value[4] == 'o') {
+                        if (value[5] == 'n') {
+                            if (value[6] == 'u') {
+                                if (value[7] == 'm') {
+                                    if (value[8] == 'e') {
+                                        if (value[9] == 'r') {
+                                            if (value[10] == 'o') {
+                                                if (value[11] == '\0')
+                                                    return init_token(TOKEN_FLOAT, value);
+                                                else 
+                                                    goto SCAN_INDENTIFIER;
+                                            } else goto SCAN_INDENTIFIER;
+                                        } else goto SCAN_INDENTIFIER;
+                                    } else goto SCAN_INDENTIFIER;
+                                } else goto SCAN_INDENTIFIER;
+                            } else goto SCAN_INDENTIFIER;
+                        } else if (value[5] == '\0') {
+                            return init_token(TOKEN_FLOAT, value);
+                        } else goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "kundi") == 1 && (strlen(value) == strlen("kundi")))
-    {
-        return init_token(TOKEN_ELIF, value);
+    //TOKEN_GLOBAL - LAHAT |  //TOKEN_STRING - LINYA
+    else if(value[0] == 'l') {
+        if(value[1] == 'a') {
+            if(value[2] == 'h') {
+                if(value[3] == 'a') {
+                    if(value[4] == 'd') {
+                        if(value[5] == '\0') 
+                            return init_token(TOKEN_PRINT, value);
+                    }
+                    else if(value[4] == 't') {
+                        if(value[5] == '\0') 
+                            return init_token(TOKEN_GLOBAL, value);
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'i') {
+            if (value[2] == 'n') {
+                if (value[3] == 'y') {
+                    if (value[4] == 'a') {
+                        if(value[5] == '\0') 
+                            return init_token(TOKEN_STR, value);
+                        else 
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "para") == 1 && (strlen(value) == strlen("para")))
-    {
-        return init_token(TOKEN_FOR, value);
+    //TOKEN_BOOLT - TOTOO
+    else if(value[0] == 't') {
+        if(value[1] == 'o') {
+            if(value[2] == 't') {
+                if(value[3] == 'o') {
+                    if(value[4] == 'o') {
+                        if(value[5] == '\0') 
+                            return init_token(TOKEN_BOOLT, value);
+                        else
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'i') {
+            if (value[2] == 'g') {
+                if (value[3] == 'i') {
+                    if (value[4] == 'l') {
+                        if (value[5] == '\0')
+                            return init_token(TOKEN_BREAK, value);
+                        else
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'u') {
+            if (value[2] == 'l') {
+                if (value[3] == 'o') {
+                    if (value[4] == 'y') {
+                        if (value[5] == '\0') 
+                            return init_token(TOKEN_CONTINUE, value);
+                        else 
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "dep") == 1 && (strlen(value) == strlen("dep")))
-    {
-        return init_token(TOKEN_FUNCTION, value);
+    //TOKEN_INT - NUMERO / NUM | //TOKEN_IN - NASA
+    else if(value[0] == 'n') {
+        if(value[1] == 'u') {
+            if(value[2] == 'm') {
+                if(value[3] == 'e') {
+                    if(value[4] == 'r') {
+                        if(value[5] == 'o') {
+                            if(value[6] == '\0') 
+                                return init_token(TOKEN_INT, value);
+                            else 
+                                goto SCAN_INDENTIFIER;
+                        } else 
+                            goto SCAN_INDENTIFIER;
+                    } else 
+                        goto SCAN_INDENTIFIER; 
+                } else if (value[3] == '\0') {
+                    return init_token(TOKEN_INT, value);
+                } else 
+                    goto SCAN_INDENTIFIER;
+            } else 
+                goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'a') {
+            if (value[2] == 's') {
+                if (value[3] == 'a') {
+                    if (value[4] == '\0') {
+                        return init_token(TOKEN_IN, value);
+                    } else 
+                        goto SCAN_INDENTIFIER;        
+                } else 
+                    goto SCAN_INDENTIFIER;
+            } else 
+                goto SCAN_INDENTIFIER;
+        } else 
+            goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "depinisyon") == 1 && (strlen(value) == strlen("depinisyon")))
-    {
-        return init_token(TOKEN_FUNCTION, value);
+    //TOKEN_CHAR - KARAKTER/KAR | //TOKEN_ELIF - KUNDI | //TOKEN_IF - KUNG | //TOKEN_KUHA - KUHA
+    else if (value[0] == 'k') {
+        if (value[1] == 'a') {
+            if (value[2] == 'r') {
+                if (value[3] == 'a') {
+                    if (value[4] == 'k') {
+                        if (value[5] == 't') {
+                            if (value[6] == 'e') {
+                                if (value[7] == 'r') {
+                                    if (value[8] == '\0') {
+                                        return init_token(TOKEN_CHAR, value);
+                                    } else 
+                                        goto SCAN_INDENTIFIER;
+                                } else 
+                                    goto SCAN_INDENTIFIER;
+                            } else 
+                                goto SCAN_INDENTIFIER;
+                        } else 
+                            goto SCAN_INDENTIFIER;
+                    } else 
+                        goto SCAN_INDENTIFIER;
+                } else if (value[3] == '\0') {
+                    return init_token(TOKEN_CHAR, value);
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'u') {
+            if (value[2] == 'n') {
+                if (value[3] == 'd') {
+                    if (value[4] == 'i') {
+                        if (value[5] == '\0')
+                            return init_token(TOKEN_ELIF, value);
+                        else 
+                            goto SCAN_INDENTIFIER;
+                    } else 
+                        goto SCAN_INDENTIFIER;
+                }
+                else if (value[3] == 'g') {
+                    if (value[4] == '\0')
+                        return init_token(TOKEN_IF, value);
+                    else
+                        goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER; 
+            } else if (value[2] == 'h') {
+                if (value[3] == 'a') {
+                    if (value[4] == '\0')
+                        return init_token(TOKEN_SCAN, value);
+                    else 
+                        goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "angkat") == 1 && (strlen(value) == strlen("angkat")))
-    {
-        return init_token(TOKEN_IMPORT, value);
+    //TOKEN_FUNCTION - DEPINISYON/DEP - //TOKEN_DBL - DOBLENUMERO/DOBLE
+    else if (value[0] == 'd') {
+        if (value[1] == 'e') {
+            if (value[2] == 'p') {
+                if (value[3] == 'i') {
+                    if (value[4] == 'n'){
+                        if (value[5] == 'i'){
+                            if (value[6] == 's'){
+                                if (value[7] == 'y'){
+                                    if (value[8] == 'o'){
+                                        if (value[9] == 'n'){
+                                            if (value[10] == '\0')
+                                                return init_token(TOKEN_FUNCTION, value);
+                                            else
+                                                goto SCAN_INDENTIFIER;
+                                        } else goto SCAN_INDENTIFIER;
+                                    } else goto SCAN_INDENTIFIER;
+                                } else goto SCAN_INDENTIFIER;
+                            } else goto SCAN_INDENTIFIER;
+                        } else goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER; 
+                } else if(value[3] == '\0'){
+                    return init_token(TOKEN_FUNCTION, value);
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        }
+        else if (value[1] == 'o') {
+            if (value[2] == 'b') {
+                if (value[3] == 'l') {
+                    if (value[4] == 'e') {
+                        if (value[5] == 'n') {
+                            if (value[6] == 'u') {
+                                if (value[7] == 'm') {
+                                    if (value[8] == 'e') {
+                                        if (value[9] == 'r') {
+                                            if (value[10] == 'o') {
+                                                if (value[11] == '\0'){
+                                                    return init_token(TOKEN_DBL, value);
+                                                } else
+                                                    goto SCAN_INDENTIFIER;
+                                            } else goto SCAN_INDENTIFIER;
+                                        } else goto SCAN_INDENTIFIER;
+                                    } else goto SCAN_INDENTIFIER;
+                                } else goto SCAN_INDENTIFIER;
+                            } else goto SCAN_INDENTIFIER;
+                        } else if (value[5] == '\0') 
+                            return init_token(TOKEN_DBL, value);
+                        else 
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "subukan") == 1 && (strlen(value) == strlen("subukan")))
-    {
-        return init_token(TOKEN_TRY, value);
+    //TOKEN_IMPORT - ANGKAT | //TOKEN_AND - AT
+    else if (value[0]== 'a') {
+        if (value[1] == 'n') {
+            if (value[2] == 'g') {
+                if (value[3] == 'k') {
+                    if (value[4] == 'a'){
+                        if (value[5] == 't'){
+                            if (value[6] == '\0')
+                                return init_token(TOKEN_IMPORT, value);
+                            else
+                                goto SCAN_INDENTIFIER;
+                        } else goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 't') {
+            if (value[2] == '\0')
+                return init_token(TOKEN_AND, value);
+            else
+                goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "maliban") == 1 && (strlen(value) == strlen("maliban")))
-    {
-        return init_token(TOKEN_EXCEPT, value);
+    //TOKEN_EXCEPT - MALIBAN | //TOKEN_BOOLM - MALI | //TOKEN_MULA - MULA
+    else if (value[0] == 'm') {
+        if (value[1] == 'a') {
+            if (value[2] == 'l') {
+                if (value[3] == 'i') {
+                    if (value[4] == 'b'){
+                        if (value[5] == 'a'){
+                            if (value[6] == 'n'){
+                                if (value[7] == '\0'){
+                                    return init_token(TOKEN_EXCEPT, value);
+                                } else goto SCAN_INDENTIFIER;
+                            } else goto SCAN_INDENTIFIER;
+                        } else goto SCAN_INDENTIFIER;
+                    } else if (value[4] == '\0') {
+                        return init_token(TOKEN_BOOLM, value);
+                    } else 
+                        goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER; 
+        } else if (value[1] == 'u') {
+            if (value[2] == 'l') {
+                if (value[3] == 'a') {
+                    if (value[4] == '\0') {
+                        return init_token(TOKEN_FROM, value);
+                    } else
+                        goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER; 
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "wakas") == 1 && (strlen(value) == strlen("wakas")))
-    {
-        return init_token(TOKEN_FINALLY, value);
+    //TOKEN_FINALLY - WAKAS | //TOKEN_NULL - WALA
+    else if (value[0] == 'w') {
+        if (value[1] == 'a') {
+            if (value[2] == 'k') {
+                if (value[3] == 'a') {
+                    if (value[4] == 's'){
+                        if (value[5] == '\0'){
+                            return init_token(TOKEN_FINALLY, value);
+                        } else
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else if (value[2] == 'l') {
+                if (value[3] == 'a') {
+                    if (value[4] == '\0')
+                        return init_token(TOKEN_NULL, value);
+                    else 
+                        goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "tigil") == 1 && (strlen(value) == strlen("tigil")))
-    {
-        return init_token(TOKEN_BREAK, value);
+    //TOKEN_LAHAD - LAHAD
+    else if (value[0]== 'l') {
+        if (value[1] == 'a') {
+            if (value[2] == 'h') {
+                if (value[3] == 'a') {
+                    if (value[4] == 'd') {
+                        if (value[5] == '\0')
+                            return init_token(TOKEN_PRINT, value);
+                        else
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "tuloy") == 1 && (strlen(value) == strlen("tuloy")))
-    {
-        return init_token(TOKEN_CONTINUE, value);
+    //TOKEN_BREAK - TIGIL | //TOKEN_CONTINUE - TULOY
+    else if (value[0]== 't') {
+        if (value[1] == 'i') {
+            if (value[2] == 'g') {
+                if (value[3] == 'i') {
+                    if (value[4] == 'l') {
+                        if (value[5] == '\0') {
+                            return init_token(TOKEN_BREAK, value);
+                        } else
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if (value[1] == 'u') {
+            if (value[2] == 'l') {
+                if (value[3] == 'o') {
+                    if (value[4] == 'y') {
+                        if (value[5] == '\0') {
+                            return init_token(TOKEN_CONTINUE, value);
+                        } else 
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "balik") == 1 && (strlen(value) == strlen("balik")))
-    {
-        return init_token(TOKEN_RETURN, value);
+    //TOKEN_RETURN - BALIK | //TOKEN_BOOL - BOLYAN
+    else if (value[0]== 'b') {
+        if (value[1] == 'a') {
+            if (value[2] == 'l') {
+                if (value[3] == 'i') {
+                    if (value[4] == 'k') {
+                        if (value[5] == '\0')
+                            return init_token(TOKEN_RETURN, value);
+                        else 
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else if(value[1] == 'o') {
+            if(value[2] == 'l') {
+                if(value[3] == 'y') {	
+                    if(value[4] == 'a') {
+                        if(value[5] == 'n') {
+                            if(value[6] == '\0') 
+                                return init_token(TOKEN_BOOL, value);
+                            else
+                                goto SCAN_INDENTIFIER;
+                        } else goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "at") == 1 && (strlen(value) == strlen("at")))
-    {
-        return init_token(TOKEN_AND, value);
+    //TOKEN_OR - O
+    else if (value[0]== 'o'){
+        if (value[1] == '\0') 
+            return init_token(TOKEN_OR, value);
+        else 
+            goto SCAN_INDENTIFIER;
     }
-    else if (compare_to_keyword(value, "o") == 1 && (strlen(value) == strlen("o")))
-    {
-        return init_token(TOKEN_OR, value);
-    }
-    else if (compare_to_keyword(value, "nasa") == 1 && (strlen(value) == strlen("nasa")))
-    {
-        return init_token(TOKEN_IN, value);
-    }
-    else if (compare_to_keyword(value, "lahat") == 1 && (strlen(value) == strlen("lahat")))
-    {
-        return init_token(TOKEN_GLOBAL, value);
-    }
-    else if (compare_to_keyword(value, "bolyan") == 1 && (strlen(value) == strlen("bolyan")))
-    {
-        return init_token(TOKEN_BOOL, value);
-    }
-    else if (compare_to_keyword(value, "totoo") == 1 && (strlen(value) == strlen("totoo")))
-    {
-        return init_token(TOKEN_BOOLT, value);
-    }
-    else if (compare_to_keyword(value, "mali") == 1 && (strlen(value) == strlen("mali")))
-    {
-        return init_token(TOKEN_BOOLM, value);
-    }
-    else if (compare_to_keyword(value, "numero") == 1 && (strlen(value) == strlen("numero")))
-    {
-        return init_token(TOKEN_INT, value);
-    }
-    else if (compare_to_keyword(value, "num") == 1 && (strlen(value) == strlen("num")))
-    {
-        return init_token(TOKEN_INT, value);
-    }
-    else if (compare_to_keyword(value, "linya") == 1 && (strlen(value) == strlen("linya")))
-    {
-        return init_token(TOKEN_STR, value);
-    }
-    else if (compare_to_keyword(value, "wala") == 1 && (strlen(value) == strlen("wala")))
-    {
-        return init_token(TOKEN_NULL, value);
-    }
-    else if (compare_to_keyword(value, "punto") == 1 && (strlen(value) == strlen("punto")))
-    {
-        return init_token(TOKEN_FLOAT, value);
-    }
-    else if (compare_to_keyword(value, "puntonumero") == 1 && (strlen(value) == strlen("puntonumero")))
-    {
-        return init_token(TOKEN_FLOAT, value);
-    }
-    else if (compare_to_keyword(value, "doble") == 1 && (strlen(value) == strlen("doble")))
-    {
-        return init_token(TOKEN_DBL, value);
-    }
-    else if (compare_to_keyword(value, "doblenumero") == 1 && (strlen(value) == strlen("doblenumero")))
-    {
-        return init_token(TOKEN_DBL, value);
-    }
-    else if (compare_to_keyword(value, "karakter") == 1 && (strlen(value) == strlen("karakter")))
-    {
-        return init_token(TOKEN_CHAR, value);
-    }
-    else if (compare_to_keyword(value, "kar") == 1 && (strlen(value) == strlen("kar")))
-    {
-        return init_token(TOKEN_CHAR, value);
-    }
-    else if (compare_to_keyword(value, "lahad") == 1 && (strlen(value) == strlen("lahad")))
-    {
-        return init_token(TOKEN_PRINT, value);
-    }
-    else if (compare_to_keyword(value, "kuha") == 1 && (strlen(value) == strlen("kuha")))
-    {
-        return init_token(TOKEN_SCAN, value);
+    //TOKEN_IBURA - IBURA
+    else if (value[0]== 'i') {
+        if (value[1] == 'b') {
+            if (value[2] == 'u') {
+                if (value[3] == 'r') {
+                    if (value[4] == 'a') {
+                        if (value[5] == '\0') 
+                            return init_token(TOKEN_DEL, value);
+                        else 
+                            goto SCAN_INDENTIFIER;
+                    } else goto SCAN_INDENTIFIER;
+                } else goto SCAN_INDENTIFIER;
+            } else goto SCAN_INDENTIFIER;
+        } else goto SCAN_INDENTIFIER;
     }
     else
     {
+        SCAN_INDENTIFIER:;
         // john  -> return as id
         // j&&hn -> return as unknown or invalid
         // JOHN = 6 -> return as CONSTNT
@@ -616,3 +944,582 @@ token_t *lexer_collect_char_lit(lexer_t *lexer)
         return init_token(TOKEN_UNKNOWN, value);
     }
 };
+/* 
+//TOKEN_WHILE - HABANG
+int isHabang(char* lexeme) {
+    if (lexeme[0]== 'h') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 'b') {
+                if (lexeme[3] == 'a') {
+                    if (lexeme[4] == 'n') {
+                        if (lexeme[5] == 'g') {
+                            if (lexeme[6] == '\0') 
+                                return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+//TOKEN_IF - KUNG
+int isKung(char* lexeme) {
+    if (lexeme[0]== 'k') {
+        if (lexeme[1] == 'u') {
+            if (lexeme[2] == 'n') {
+                if (lexeme[3] == 'g') {
+                    if (lexeme[4] == '\0')
+                        return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+//TOKEN_ELSE - SAKALI
+int isSakali(char* lexeme) {
+    if (lexeme[0]== 's') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 'k') {
+                if (lexeme[3] == 'a') {
+                    if (lexeme[4] == 'l') {
+                        if (lexeme[5] == 'i') {
+                            if (lexeme[6] == '\0') 
+                                return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+//TOKEN_ELIF - KUNDI
+int collect_kundi(char* lexeme) {
+    if (lexeme[0]== 'k') {
+        if (lexeme[1] == 'u') {
+            if (lexeme[2] == 'n') {
+                if (lexeme[3] == 'd') {
+                    if (lexeme[4] == 'i') {
+                        if (lexeme[5] == '\0')
+                            return 1;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+//TOKEN_FOR - PARA
+int collect_para(char* lexeme) {
+    if (lexeme[0]== 'p') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 'r') {
+                if (lexeme[3] == 'a') {
+                    if (lexeme[4] == '\0')
+                        return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+//TOKEN_GLOBAL - LAHAT
+int collect_lahat (char* lexeme) {
+	if(lexeme[0] == 'l') {
+		if(lexeme[1] == 'a') {
+			if(lexeme[2] == 'h') {
+				if(lexeme[3] == 'a') {
+					if(lexeme[4] == 't') {
+						if(lexeme[5] == '\0') 
+							return 1; 
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+//TOKEN_BOOL - BOLYAN
+int collect_bolyan (char* lexeme) {
+	if(lexeme[0] == 'b') {
+		if(lexeme[1] == 'o') {
+			if(lexeme[2] == 'l') {
+				if(lexeme[3] == 'y') {	
+					if(lexeme[4] == 'a') {
+						if(lexeme[5] == 'n') {
+							if(lexeme[6] == '\0') 
+								return 1; 
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+//TOKEN_BOOLT - TOTOO
+int collect_totoo (char* lexeme) {
+	if(lexeme[0] == 't') {
+		if(lexeme[1] == 'o') {
+			if(lexeme[2] == 't') {
+				if(lexeme[3] == 'o') {
+					if(lexeme[4] == 'o') {
+						if(lexeme[5] == '\0') 
+							return 1; 
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+//TOKEN_BOOLM - MALI
+int collect_mali (char* lexeme) {
+	if(lexeme[0] == 'm') {
+		if(lexeme[1] == 'a') {
+			if(lexeme[2] == 'l') {
+				if(lexeme[3] == 'i') {
+					if(lexeme[4] == '\0') 
+						return 1; 
+					
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+//TOKEN_INT - NUMERO / NUM
+int collect_numero (char* lexeme) {
+	if(lexeme[0] == 'n') {
+		if(lexeme[1] == 'u') {
+			if(lexeme[2] == 'm') {
+				if(lexeme[3] == 'e') {
+					if(lexeme[4] == 'r') {
+						if(lexeme[5] == 'o') {
+							if(lexeme[6] == '\0') 
+								return 1; 
+
+						}
+					}
+				} else if (lexeme[3] == '\0') {
+					return 1;
+                }
+			}
+		}
+	}
+	return 0;
+}
+
+//TOKEN_STRING - LINYA
+int collect_linya(char* lexeme) {
+    if (lexeme[0]== 'l') {
+        if (lexeme[1] == 'i') {
+            if (lexeme[2] == 'n') {
+                if (lexeme[3] == 'y') {
+                    if (lexeme[4] == 'a') {
+                        if(lexeme[5] == '\0') {
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+//TOKEN_NULL - WALA
+int collect_wala(char* lexeme) {
+    if (lexeme[0]== 'w') {
+            if (lexeme[1] == 'a') {
+                if (lexeme[2] == 'l') {
+                    if (lexeme[3] == 'a') {
+                        if (lexeme[4] == '\0')
+                            return 1;
+                }
+            }
+    	}
+    }
+    return 0;
+}
+
+
+//TOKEN_FLOAT - PUNTONUMERO/PUNTO
+int collect_puntonumero(char* lexeme){
+    if (lexeme[0]== 'p') {
+        if (lexeme[1] == 'u') {
+            if (lexeme[2] == 'n') {
+                if (lexeme[3] == 't') {
+                    if (lexeme[4] == 'o') {
+                        if (lexeme[5] == 'n') {
+                            if (lexeme[6] == 'u') {
+                                if (lexeme[7] == 'm') {
+                                    if (lexeme[8] == 'e') {
+                                        if (lexeme[9] == 'r') {
+                                            if (lexeme[10] == 'o') {
+                                                if (lexeme[11] == '\0') {
+                                                    return 1;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else if (lexeme[5] == '\0') {
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+//TOKEN_DBL - DOBLENUMERO/DOBLE
+int collect_doblenumero(char* lexeme) {
+    if (lexeme[0]== 'd') {
+            if (lexeme[1] == 'o') {
+                if (lexeme[2] == 'b') {
+                    if (lexeme[3] == 'l') {
+			if (lexeme[4] == 'e') {
+			    if (lexeme[5] == 'n') {
+				if (lexeme[6] == 'u') {
+				    if (lexeme[7] == 'm') {
+					if (lexeme[8] == 'e') {
+					    if (lexeme[9] == 'r') {
+						if (lexeme[10] == '0') {
+						    if (lexeme[11] == '\0')
+                          			    return 1;
+			     else if (lexeme[5] == '\0')
+				return 1;
+                			}
+           		     	    }
+			        }
+		            }
+   		        }
+	            }
+	        }
+            }
+        }
+    }
+}
+    return 0;
+}
+
+
+//TOKEN_CHAR - KARAKTER/KAR
+int collect_karakter(char* lexeme) {
+    if (lexeme[0]== 'k') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 'r') {
+                if (lexeme[3] == 'a') {
+                    if (lexeme[4] == 'k') {
+			            if (lexeme[5] == 't') {
+				            if (lexeme[6] == 'e') {
+				                if (lexeme[7] == 'r') {
+					                if (lexeme[8] == '\0') {
+					                    return 1;
+                                    }
+                  	            }
+               	            }
+                        } 
+	                }
+  	            }
+		    } else if (lexeme[3] == '\0') {
+                            return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+//TOKEN_FUNCTION - DEPINISYON
+int collect_depinisyon(char* lexeme) {
+    if (lexeme[0]== 'd') {
+        if (lexeme[1] == 'e') {
+            if (lexeme[2] == 'p') {
+                if (lexeme[3] == 'i') {
+                    if (lexeme[4] == 'n'){
+                        if (lexeme[5] == 'i'){
+                            if (lexeme[6] == 's'){
+                                if (lexeme[7] == 'y'){
+                                    if (lexeme[8] == 'o'){
+                                        if (lexeme[9] == 'n'){
+                                            if (lexeme[10] == '\0'){
+                                                return 1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }else if(lexeme[3] == '\0'){
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+//TOKEN_IMPORT - ANGKAT
+int collect_angkat(char* lexeme) {
+    if (lexeme[0]== 'a') {
+        if (lexeme[1] == 'n') {
+            if (lexeme[2] == 'g') {
+                if (lexeme[3] == 'k') {
+                    if (lexeme[4] == 'a'){
+                        if (lexeme[5] == 't'){
+                            if (lexeme[6] == '\0'){
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+//TOKEN_TRY - SUBUKAN
+int collect_subukan(char* lexeme) {
+    if (lexeme[0]== 's') {
+        if (lexeme[1] == 'u') {
+            if (lexeme[2] == 'b') {
+                if (lexeme[3] == 'u') {
+                    if (lexeme[4] == 'k') {
+                        if (lexeme[5] == 'a'){
+                            if (lexeme[6] == 'n'){
+                                if (lexeme[7] == '\0'){
+                                    return 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+//TOKEN_EXCEPT - MALIBAN
+int collect_maliban(char* lexeme) {
+    if (lexeme[0]== 'm') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 'l') {
+                if (lexeme[3] == 'i') {
+                    if (lexeme[4] == 'b'){
+                        if (lexeme[5] == 'a'){
+                            if (lexeme[6] == 'n'){
+                                if (lexeme[7] == '\0'){
+                                    return 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+//TOKEN_FINALLY - WAKAS
+int collect_wakas(char* lexeme) {
+    if (lexeme[0]== 'w') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 'k') {
+                if (lexeme[3] == 'a') {
+                    if (lexeme[4] == 's'){
+                        if (lexeme[5] == '\0'){
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+//TOKEN_LAHAD - LAHAD
+int collect_lahad(char* lexeme) {
+    if (lexeme[0]== 'l') {
+            if (lexeme[1] == 'a') {
+                if (lexeme[2] == 'h') {
+                    if (lexeme[3] == 'a') {
+                        if (lexeme[4] == 'd') {
+			    if (lexeme[5] == '\0')
+                            return 1;
+                    }
+                }
+            }
+	}
+    }
+    return 0;
+}
+
+//TOKEN_KUHA - KUHA
+int collect_kuha(char* lexeme) {
+    if (lexeme[0]== 'k') {
+        if (lexeme[1] == 'u') {
+            if (lexeme[2] == 'h') {
+                if (lexeme[3] == 'a') {
+                    if (lexeme[4] == '\0') {
+                        return 1;
+                    }
+                }
+            }
+	    }
+    }
+    return 0;
+}
+
+//TOKEN_IBURA - IBURA
+int collect_lahad(char* lexeme) {
+    if (lexeme[0]== 'i') {
+        if (lexeme[1] == 'b') {
+            if (lexeme[2] == 'u') {
+                if (lexeme[3] == 'r') {
+                    if (lexeme[4] == 'a') {
+                        if (lexeme[5] == '\0') {
+                            return 1;
+                        }
+                    }
+                }
+            }
+	    }
+    }
+    return 0;
+}
+
+//TOKEN_MULA - MULA
+int collect_kuha(char* lexeme) {
+    if (lexeme[0]== 'm') {
+        if (lexeme[1] == 'u') {
+            if (lexeme[2] == 'l') {
+                if (lexeme[3] == 'a') {
+                    if (lexeme[4] == '\0') {
+                        return 1;
+                    }
+                }
+            }
+	    }
+    }
+    return 0;
+}
+
+//TOKEN_BREAK - TIGIL
+int collect_kung(char* lexeme) {
+    if (lexeme[0]== 't') {
+        if (lexeme[1] == 'i') {
+            if (lexeme[2] == 'g') {
+                if (lexeme[3] == 'i') {
+                    if (lexeme[4] == 'l') {
+                        if (lexeme[5] == '\0') {
+                            return 1;
+                        }
+                    }
+                }
+            }
+	    }
+    }
+    return 0;
+}
+
+//TOKEN_CONTINUE - TULOY
+int collect_kung(char* lexeme) {
+    if (lexeme[0]== 't') {
+        if (lexeme[1] == 'u') {
+            if (lexeme[2] == 'l') {
+                if (lexeme[3] == 'o') {
+                    if (lexeme[4] == 'y') {
+			            if (lexeme[5] == '\0')
+                            return 1;
+                    }
+                }
+            }
+	    }
+    }
+    return 0;
+}
+
+//TOKEN_RETURN - BALIK
+int collect_kung(char* lexeme) {
+    if (lexeme[0]== 'b') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 'l') {
+                if (lexeme[3] == 'i') {
+                    if (lexeme[4] == 'k') {
+			            if (lexeme[5] == '\0') {
+                            return 1;
+                        }
+                    }
+                }
+            }
+	    }
+    }
+    return 0;
+}
+
+//TOKEN_AND - AT
+int collect_kung(char* lexeme) {
+    if (lexeme[0]== 'a') {
+        if (lexeme[1] == 't') {
+		    if (lexeme[2] == '\0') {
+                return 1;
+            }
+	    }
+    }
+    return 0;
+}
+
+//TOKEN_OR - O
+int collect_kung(char* lexeme) {
+	if (lexeme[0]== 'o'){
+		if (lexeme[1] == '\0') {
+			return 1;
+        }
+	}
+	return 0;
+}
+
+//TOKEN_IN - NASA
+int collect_kung(char* lexeme) {
+    if (lexeme[0]== 'n') {
+        if (lexeme[1] == 'a') {
+            if (lexeme[2] == 's') {
+                if (lexeme[3] == 'a') {
+			        if (lexeme[4] == '\0') {
+                        return 1;
+                    }                    
+                }
+            }
+	    }
+    }
+    return 0;
+} */
+/* 
+
+ */
