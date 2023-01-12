@@ -98,9 +98,11 @@ typedef struct TOKEN_STRUCT
     } type;
 
     char *value;
+    unsigned int lpos;
+    unsigned int cpos;
 
 } token_t;
 
-token_t *init_token(int type, char *value);
+token_t *init_token(int type, char *value, int l, int lc);
 
 #endif
