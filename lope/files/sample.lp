@@ -101,6 +101,9 @@ pangalan_ko = "john";
 @
 !
 
-
+ibura(pangalan_ko);
+angkat mula "stdlib.lp";
 
 linya p2p = "PUP";
+
+

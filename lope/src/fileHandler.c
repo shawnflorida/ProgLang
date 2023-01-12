@@ -36,7 +36,6 @@ void create_TokenOutput(char *file)
 
 int scanFile(lexer_t *lexer)
 {
-
     token_t *token = (void *)0;
     const char *token_type[] = {
         "Identifier/Value",
