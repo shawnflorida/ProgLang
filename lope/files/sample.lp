@@ -39,6 +39,7 @@ punto
 doblenumero
 doble
 karakter
+kar
 kung
 sakali
 kundi
@@ -55,29 +56,31 @@ maliban
 wakas
 mula
 balik
+
 at
 o 
 nasa 
 lahat
-karakter
+
+akter
 ero
 numero
+numero
 inisyon
+
 ,
 ;
 ()
 []
 {}
 
-akter
-ero
-inisyon
 numero CONST eunice_number = 12;
 bolyan CONST eunice_bool = totoo;
 linya pangalan = "Yuan Urena";
 kar CONST eunice_bool = 'j';
 numero edad = 21;
 punto CONST numero = 12.2;
+
 # hello world
 #* haha 
 second word
