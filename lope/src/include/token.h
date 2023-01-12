@@ -91,6 +91,10 @@ typedef struct TOKEN_STRUCT
         TOKEN_COMMA,
         TOKEN_CHAR_LIT,
         TOKEN_FLOAT_LIT,
+        TOKEN_PRINT,
+        TOKEN_SCAN,
+        TOKEN_DEL,
+        TOKEN_FROM,
     } type;
 
     char *value;

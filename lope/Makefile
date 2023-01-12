@@ -19,7 +19,7 @@ install:
 	cp ./lope.exe/usr/local/bin/new
 #clean command
 clean:
-	-rm *.exe
-	-rm *.o
-	-rm src/*.o
+	-del *.exe
+	-cd files && del *.txt
+	-cd src && del *.o
 

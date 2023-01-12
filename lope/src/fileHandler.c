@@ -36,7 +36,6 @@ void create_TokenOutput(char *file)
 
 int scanFile(lexer_t *lexer)
 {
-
     token_t *token = (void *)0;
     const char *token_type[] = {
         "Identifier/Value",
@@ -107,7 +106,11 @@ int scanFile(lexer_t *lexer)
         "Constant",
         "Comma Separator",
         "Char literal",
-        "Float literal"
+        "Float literal",
+        "Scan",
+        "Print",
+        "Delete",
+        "From"
         };
 
     const char *token_code[] = {
@@ -179,6 +182,11 @@ int scanFile(lexer_t *lexer)
         "TOKEN_CAPITAL",
         "TOKEN_COMMA",
         "TOKEN_CHAR_LIT",
+        "TOKEN_FLOAT_LIT",
+        "TOKEN_PRINT",
+        "TOKEN_SCAN",
+        "TOKEN_DEL",
+        "TOKEN_FROM"
         };
 
     printf("TOKEN-NUMBER\tTOKEN-CODE\t\t\tTOKEN-INFO\t\tLEXEME\n");
