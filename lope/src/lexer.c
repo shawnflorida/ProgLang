@@ -874,7 +874,7 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     int flag_invalid = 0;
     int startPos = lexer->lc;
     // while((isdigit(lexer->c) == 1)) -> nagiinfinite loop ako here
-    // so pinalitan ko lang ng ganito
+    // so pinalitan ko lang ng ganito 
     while ((isdigit(lexer->c) || lexer->c == '.'))
     {
         if (lexer->c == '.')
