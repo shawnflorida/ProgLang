@@ -873,7 +873,9 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     int decimal_count = 0;
     int flag_invalid = 0;
     int startPos = lexer->lc;
-    while ((isdigit(lexer->c) == 1 || lexer->c == '.'))
+    // while((isdigit(lexer->c) == 1)) -> nagiinfinite loop ako here
+    // so pinalitan ko lang ng ganito
+    while ((isdigit(lexer->c) || lexer->c == '.'))
     {
         if (lexer->c == '.')
         {
@@ -890,10 +892,12 @@ token_t* lexer_collect_number(lexer_t *lexer) {
     if (decimal_count == 0)
     {
         return init_token(TOKEN_NUM, value, lexer->l, startPos);
-    } else if (decimal_count <= 1)
+    }
+    else if (decimal_count <= 1)
     {
         return init_token(TOKEN_FLOAT_LIT, value, lexer->l, startPos);
-    } else
+    }
+    else
     {
         return init_token(TOKEN_UNKNOWN, value, lexer->l, startPos);
     }
