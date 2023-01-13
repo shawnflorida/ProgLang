@@ -919,6 +919,7 @@ token_t *lexer_collect_comment_single(lexer_t *lexer)
 token_t *lexer_collect_comment_multi(lexer_t *lexer)
 {
     int startPos = lexer->lc;
+    int startLinePos = lexer->l;
     lexer_advance(lexer);
     lexer_advance(lexer);
     char *value = calloc(1, sizeof(char));
@@ -928,6 +929,9 @@ token_t *lexer_collect_comment_multi(lexer_t *lexer)
         char *s = lexer_get_current_char_as_string(lexer);
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
         strcat(value, s);
+        if (lexer->c == '\n') {
+            lexer->l += 1;
+        }
         lexer_advance(lexer);
     }
     if (lexer->c == '*' && lexer->contents[lexer->i+1] == '#')
@@ -936,10 +940,10 @@ token_t *lexer_collect_comment_multi(lexer_t *lexer)
         lexer_advance(lexer); //for #
     } else 
     {
-        return init_token(TOKEN_UNKNOWN, value, lexer->l, startPos-1);
+        return init_token(TOKEN_UNKNOWN, value, startLinePos, startPos-1);
     }
     
-    return init_token(TOKEN_COMMENT_VALUE_MULTI, value, lexer->l, startPos-1);
+    return init_token(TOKEN_COMMENT_VALUE_MULTI, value, startLinePos, startPos-1);
 };
 
 token_t *lexer_collect_char_lit(lexer_t *lexer)
