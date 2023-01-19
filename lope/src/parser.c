@@ -91,7 +91,7 @@ void exec_parser(parser_t *parser)
     free(program);
     printf("Success");
 }
-// program = statement
+
 node_t *createNode()
 {
     node_t *node = (node_t *)malloc(sizeof(node_t));
@@ -105,41 +105,80 @@ node_t *createNode()
 node_t *programN(parser_t *parser)
 {
     node_t *node = createNode();
-    node->value.program = (programNode *)malloc(sizeof(programNode));
     node->type = PROGRAM;
-    node->value.program->statements = statementN(parser);
+    node->value.program = (programNode *)malloc(sizeof(programNode));
+    node->value.program->statements = statementN(parser, node);
+    traverse_statements(node->value.program->statements);
     return node;
 }
-node_t *statementN(parser_t *parser)
+node_t **statementN(parser_t *parser, node_t *parent)
 {
-    node_t *node = createNode();
-    node->value.stmt = (statementNode *)malloc(sizeof(statementNode));
-    node->type = STATEMENT;
-    // numero
-    if (match_tokens(parser, 6, TOKEN_BOOL, TOKEN_INT, TOKEN_DBL, TOKEN_FLOAT, TOKEN_CHAR, TOKEN_STR))
+    node_t **node = (node_t **)malloc(sizeof(nodeValue *));
+    int recursion_level = 0;
+    do
     {
-        // x
-        node->value.stmt->statement = assgnN(parser);
-    }
-    else
-    {
-        node->value.stmt->statement = atomN(parser);
-    }
-    if (parser->token == (void *)0)
-    {
-        node->value.stmt->nextStatement = NULL;
-    }
-    else
-    {
-        node->value.stmt->nextStatement = statementN(parser);
-    }
-
-    if ((node->value.stmt->statement == (void *)0) && (node->value.stmt->nextStatement == (void *)0))
-    {
-        free(node);
-    }
+        if (match_tokens(parser, 6, TOKEN_BOOL, TOKEN_INT, TOKEN_DBL, TOKEN_FLOAT, TOKEN_CHAR, TOKEN_STR))
+        {
+            node[recursion_level] = assgnN(parser);
+        }
+        else if (check_Token(parser, TOKEN_WHLE))
+        {
+            parser_advance(parser);
+            node[recursion_level] = whileN(parser);
+        }
+        else if (parent->type != PROGRAM && check_Token(parser, TOKEN_RBRACE))
+        {
+            return node;
+        }
+        else
+        {
+            node[recursion_level] = atomN(parser);
+        }
+        recursion_level++;
+        node = realloc(node, (recursion_level + 1) * sizeof(nodeValue));
+    } while (!nullCursor(parser) && parser->token->type != TOKEN_UNKNOWN);
     return node;
 }
+// node_t *statementN(parser_t *parser, node_t *parent)
+// {
+//     node_t *node = createNode();
+//     node->value.stmt = (statementNode *)malloc(sizeof(statementNode));
+//     node->type = STATEMENT;
+//     if (nullCursor(parser))
+//     {
+//         return node;
+//     }
+//     else if (match_tokens(parser, 6, TOKEN_BOOL, TOKEN_INT, TOKEN_DBL, TOKEN_FLOAT, TOKEN_CHAR, TOKEN_STR))
+//     {
+//         node->value.stmt->statement = assgnN(parser);
+//     }
+//     else if (check_Token(parser, TOKEN_WHLE))
+//     {
+//         parser_advance(parser);
+//         node->value.stmt->statement = whileN(parser);
+//     }
+//     else if (parent->type == WHILE && check_Token(parser, TOKEN_RBRACE))
+//     {
+//         return node;
+//     }
+//     else
+//     {
+//         return atomN(parser);
+//     }
+//     if (parser->token == (void *)0)
+//     {
+//         node->value.stmt->nextStatement = NULL;
+//     }
+//     else
+//     {
+//         node->value.stmt->nextStatement = statementN(parser, parent);
+//     }
+//     if ((node->value.stmt->statement == (void *)0) && (node->value.stmt->nextStatement == (void *)0))
+//     {
+//         free(node);
+//     }
+//     return node;
+// }
 /*
 numero y = 3 * 2 + 1;
 program
@@ -167,6 +206,17 @@ x
 addsub(y, muldiv(3, 2))
 */
 
+node_t *whileN(parser_t *parser)
+{
+    node_t *node = createNode();
+    node->type = WHILE;
+    node->value.whl = (whileNode *)malloc(sizeof(whileNode));
+    node->value.whl->expr = literalTerm(parser);
+    match(parser, TOKEN_LBRACE);
+    node->value.whl->statements = statementN(parser, node);
+    match(parser, TOKEN_RBRACE);
+    return node;
+}
 node_t *assgnN(parser_t *parser)
 {
     node_t *node = createNode();
@@ -269,6 +319,10 @@ node_t *literalTerm(parser_t *parser)
 
 node_t *atomN(parser_t *parser)
 {
+    if (nullCursor(parser))
+    {
+        return errorN(parser, "End of line, expected");
+    }
     node_t *node = createNode();
     node->value.atom = (tokenNode *)malloc(sizeof(tokenNode));
     node->type = ATOM;
@@ -288,7 +342,15 @@ node_t *atomN_from_previous(parser_t *parser)
 }
 node_t *errorN(parser_t *parser, char *errorMsg)
 {
-    printf("Error: %s on %s\n", errorMsg, parser_peek(parser)->value);
+    if (nullCursor(parser))
+    {
+        printf("Error: %s", errorMsg);
+    }
+    else
+    {
+        printf("Error: %s on %s\n", errorMsg, parser_peek(parser)->value);
+    }
+
     node_t *node = createNode();
     node->value.error = (errorNode *)malloc(sizeof(errorNode));
     node->type = ERROR;
@@ -384,7 +446,7 @@ int match(parser_t *parser, type token_to_match)
     }
     else
     {
-        printf("Expected %s, got %s\n", token_type[token_to_match], parser->token->value);
+        printf("Expected %s, got %s\n", token_type[token_to_match], token_type[parser->token->type]);
         exit(-5);
     }
 }
@@ -392,7 +454,7 @@ int match_tokens(parser_t *parser, int count, ...)
 {
     va_list args;
     va_start(args, count);
-    type tok;
+    int tok;
     for (int i = 0; i < count; i++)
     {
         tok = va_arg(args, int);
@@ -428,5 +490,18 @@ int check_Token(parser_t *parser, type token_to_match)
     else
     {
         return 0;
+    }
+}
+void traverse_statements(node_t **statements)
+{
+    int x = 0;
+    while (statements[x] != NULL)
+    {
+        if (x > 1000)
+        {
+            break;
+        }
+        printf("Statement: %d\n", statements[x]->type);
+        x++;
     }
 }

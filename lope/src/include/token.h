@@ -4,7 +4,7 @@
 typedef enum
 {
     /* id is identifiers */
-    TOKEN_ID,       // [a-zA-Z]
+    TOKEN_ID,       // [a-zA-Z]*
     TOKEN_EQUALS,   // =
     TOKEN_SEMI,     // ;
     TOKEN_LPAREN,   // (
@@ -20,13 +20,13 @@ typedef enum
     TOKEN_SUB,        // -
     TOKEN_DIV,        // /
     TOKEN_INTDIV,     // ~
-    TOKEN_MULT,       // *
+    TOKEN_MULT,       // **
     TOKEN_MOD,        // %
     TOKEN_EXP,        // ^
     TOKEN_LESS,       // <
     TOKEN_GREATER,    // >
     TOKEN_NEGATE,     // !
-    TOKEN_COLON,      //:
+    TOKEN_COLON,      // :
     TOKEN_UNDERSCORE, // _
 
     // Unary
@@ -42,7 +42,7 @@ typedef enum
     // Operator + Assignment
     TOKEN_ADD_ASGN,    // +=
     TOKEN_SUB_ASGN,    // -=
-    TOKEN_MULT_ASGN,   // *=
+    TOKEN_MULT_ASGN,   // **=
     TOKEN_DIV_ASGN,    // /=
     TOKEN_MOD_ASGN,    // %=
     TOKEN_INTDIV_ASGN, // ~=
@@ -82,17 +82,17 @@ typedef enum
     /* unknown token */
     TOKEN_UNKNOWN, // invalid
     // for comments
-    TOKEN_COMMENT_VALUE_SINGLE,
-    TOKEN_COMMENT_VALUE_MULTI,
+    TOKEN_COMMENT_VALUE_SINGLE, // #
+    TOKEN_COMMENT_VALUE_MULTI,  // #*
     // for constant
-    TOKEN_CAPITAL,
-    TOKEN_COMMA,
-    TOKEN_CHAR_LIT,
-    TOKEN_FLOAT_LIT,
-    TOKEN_PRINT,
-    TOKEN_SCAN,
-    TOKEN_DEL,
-    TOKEN_FROM,
+    TOKEN_CAPITAL,   // [A-Z]*
+    TOKEN_COMMA,     // ,
+    TOKEN_CHAR_LIT,  // "[a-z]"
+    TOKEN_FLOAT_LIT, // num.num | num
+    TOKEN_PRINT,     // lahad
+    TOKEN_SCAN,      // kuha
+    TOKEN_DEL,       // ibura
+    TOKEN_FROM,      // angkat
 } type;
 typedef struct TOKEN_STRUCT
 {

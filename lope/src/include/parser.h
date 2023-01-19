@@ -30,39 +30,31 @@ typedef enum
     ERROR,
     ATOM
 } nodeType;
-
 typedef struct
 {
     char *error;
     token_t *token;
 } errorNode;
-
 typedef struct
 {
     token_t *nodeToken;
 } tokenNode;
-
 typedef struct
 {
-    node_t *keyword; // keyword while, should be consumed?
     node_t *expr;
-    node_t *statements;
-} whileNode;
-
+    node_t **statements;
+} whileNode; // *WHILE
 typedef struct
 {
     node_t *operation;
     node_t *token;
-} unaryNode;
-
+} unaryNode; // *UNARY
 typedef struct
 {
     node_t *left;      // expr
     node_t *operation; // tokenNode
     node_t *right;     // expr
 } comparisonNode, inequalityNode, addsubNode, muldivNode;
-// operation must be == or != ... if '(' or ')' exists, they are consumed
-
 typedef struct
 {
     node_t *dataType;
@@ -70,22 +62,21 @@ typedef struct
     node_t *assignType;
     node_t *expr;
 } assgnNode;
-
 typedef struct
 {
     node_t *statement;
     node_t *nextStatement;
 } statementNode;
-
 typedef struct
 {
-    node_t *statements;
-} programNode, blockNode;
+    node_t **statements;
+} programNode;
 
 typedef union
 {
     programNode *program;
     statementNode *stmt;
+    whileNode *whl;
     assgnNode *assgn;
     comparisonNode *comp;
     inequalityNode *ineq;
@@ -115,6 +106,12 @@ void parser_advance(parser_t *parser);
  * @brief for debugging, not yet implemented
  * */
 void raise_error(char *msg);
+/**
+ * @brief traverses the statement block, useful for traversin the tree
+ *
+ * @param statements
+ */
+void traverse_statements(node_t **statements);
 
 /**
  * @brief generates an atom node that advances when match one of the tokens
@@ -165,7 +162,7 @@ int match(parser_t *parser, type token_to_match);
  */
 int match_tokens(parser_t *parser, int count, ...);
 /**
- * @brief checks only doesn't consume and advance
+ * @brief checks only doesn't consume and doesn't advance
  * @param token_to_match type of token
  */
 int check_Token(parser_t *parser, type token_to_match);
@@ -188,8 +185,16 @@ node_t *errorN(parser_t *parser, char *errorMsg);
 
 // program = statements
 node_t *programN(parser_t *parser);
-// statements = assignStatement
-node_t *statementN(parser_t *parser);
+/**
+ * @brief returns an array of statements, used in nodes:
+ *        [program, while, for, if, else, elseif]
+ *
+ * @param parser
+ * @param parent used for identifying if it is a block or the main program
+ * @return node_t**
+ */
+node_t **statementN(parser_t *parser, node_t *parent);
+node_t *whileN(parser_t *parser);
 // assign = [TOKEN_TYPE] [TOKEN_ID] [TOKEN_ANY_ASSIGN] <comparison> [TOKEN_SEMI]
 node_t *assgnN(parser_t *parser);
 // comparison = inequality ([== | !=] inequality)*
