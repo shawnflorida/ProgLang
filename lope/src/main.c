@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include "include/fileHandler.h"
 
+FILE *input_ptr, *output_ptr;
+lexer_t *lexer;
+char *fileContent, fileName[50];
+long fileLen;
+
 int main(int argc, char **argv)
 {
     for (int i = 1; i < argc; i++)
