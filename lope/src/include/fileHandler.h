@@ -10,6 +10,7 @@ extern FILE *input_ptr, *output_ptr;
 extern lexer_t *lexer;
 extern char *fileContent, fileName[50];
 extern long fileLen;
+extern char *token_type[100];
 
 int *find_file();
 int scanFile(lexer_t *lexer);

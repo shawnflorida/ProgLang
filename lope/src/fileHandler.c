@@ -2,40 +2,8 @@
 #include "include/token.h"
 #include "include/parser.h"
 
-int *find_file()
-{
-    // file -> fseek -> from start to finish -> amount of character length to memory ->
-    fseek(input_ptr, 0L, SEEK_END);
-    fileLen = ftell(input_ptr);
-    fseek(input_ptr, 0L, SEEK_SET);
-
-    fileContent = calloc(fileLen, sizeof(char));
-    fread(fileContent, sizeof(char), fileLen, input_ptr);
-}
-int check_Extension(char *file)
-{
-    char *extension;
-    extension = strrchr(file, '.');
-    if (compare_to_keyword(extension, ".lp") == 1)
+char *token_type[100] =
     {
-
-        return 1;
-    }
-    return 0;
-}
-void create_TokenOutput(char *file)
-{
-    memset(fileName, 0, sizeof(fileName));
-    strncpy(fileName, file, strrchr(file, '.') - file);
-    strcat(fileName, "_SymbolTable");
-    strcat(fileName, ".txt");
-    output_ptr = fopen(fileName, "w");
-}
-
-int scanFile(lexer_t *lexer)
-{
-    token_t **tokens = malloc(sizeof(token_t *));
-    const char *token_type[] = {
         "Identifier/Value",
         "Equal Sign",
         "Semi-Colon",
@@ -110,6 +78,39 @@ int scanFile(lexer_t *lexer)
         "Delete",
         "From"};
 
+int *find_file()
+{
+    // file -> fseek -> from start to finish -> amount of character length to memory ->
+    fseek(input_ptr, 0L, SEEK_END);
+    fileLen = ftell(input_ptr);
+    fseek(input_ptr, 0L, SEEK_SET);
+
+    fileContent = calloc(fileLen, sizeof(char));
+    fread(fileContent, sizeof(char), fileLen, input_ptr);
+}
+int check_Extension(char *file)
+{
+    char *extension;
+    extension = strrchr(file, '.');
+    if (compare_to_keyword(extension, ".lp") == 1)
+    {
+
+        return 1;
+    }
+    return 0;
+}
+void create_TokenOutput(char *file)
+{
+    memset(fileName, 0, sizeof(fileName));
+    strncpy(fileName, file, strrchr(file, '.') - file);
+    strcat(fileName, "_SymbolTable");
+    strcat(fileName, ".txt");
+    output_ptr = fopen(fileName, "w");
+}
+
+int scanFile(lexer_t *lexer)
+{
+    token_t **tokens = malloc(sizeof(token_t *));
     const char *token_code[] = {
         "TOKEN_ID",
         "TOKEN_EQUALS",

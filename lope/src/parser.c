@@ -1,381 +1,48 @@
 #include "include/parser.h"
 
-const char *token_type[] =
-    {
-        "Identifier/Value",
-        "Equal Sign",
-        "Semi-Colon",
-        "Left Parenthesis",
-        "Right Parenthesis",
-        "Left Bracket",
-        "Right Bracket",
-        "Left Brace",
-        "Right Brace",
-        "Comment",
-        "Addition",
-        "Subtraction",
-        "Division",
-        "Integer Division",
-        "Multiplication",
-        "Modulus",
-        "Exponent",
-        "Lesser Than",
-        "Greater Than",
-        "Not",
-        "Colon",
-        "Underscore",
-        "Increment",
-        "Decrement",
-        "Equal To",
-        "Less than or Equal to",
-        "Greater than or Equal to",
-        "Not Equal to",
-        "Addition Assignment",
-        "Subtraction Assignment",
-        "Multiplication Assignment",
-        "Division Assignment",
-        "Modulo Assignment",
-        "Integer Division Assignment",
-        "While",
-        "If",
-        "Else",
-        "Else If",
-        "For",
-        "Function",
-        "Import",
-        "Try",
-        "Except",
-        "Finally",
-        "Break",
-        "Continue",
-        "Return",
-        "And",
-        "Or",
-        "In",
-        "Global",
-        "Boolean",
-        "True",
-        "False",
-        "Integer",
-        "Num Literal",
-        "String",
-        "String Literal",
-        "None",
-        "Float",
-        "Double",
-        "Character",
-        "Invalid",
-        "Single Comment",
-        "Multiple Comment",
-        "Constant",
-        "Comma Separator",
-        "Char literal",
-        "Float literal",
-        "Scan",
-        "Print",
-        "Delete",
-        "From"};
-
-parser_t *parser_init(token_t **tokens)
-{
-    parser_t *parser = (parser_t *)malloc(sizeof(parser_t));
-    parser->tokens = tokens;
-    parser->cursor = 0;
-    parser->token = parser->tokens[parser->cursor];
-    return parser;
-}
 void exec_parser(parser_t *parser)
 {
     node_t *program = programN(parser);
+    traverse(program, 0);
     free(parser);
     free(program);
-    printf("Success");
+    printf("\nSuccess");
 }
-
-node_t *createNode()
+parser_t *parser_init(token_t **tokens)
 {
-    node_t *node = (node_t *)malloc(sizeof(node_t));
-    if (node == NULL)
-    {
-        printf("\nFailed to allocate memory!\n");
-        exit(-1);
-    }
-    return node;
-}
-node_t *programN(parser_t *parser)
-{
-    node_t *node = createNode();
-    node->type = PROGRAM;
-    node->value.program = (programNode *)malloc(sizeof(programNode));
-    node->value.program->statements = statementN(parser, node);
-    traverse_statements(node->value.program->statements);
-    return node;
-}
-node_t **statementN(parser_t *parser, node_t *parent)
-{
-    node_t **node = (node_t **)malloc(sizeof(nodeValue *));
-    int recursion_level = 0;
-    do
-    {
-        if (match_tokens(parser, 6, TOKEN_BOOL, TOKEN_INT, TOKEN_DBL, TOKEN_FLOAT, TOKEN_CHAR, TOKEN_STR))
-        {
-            node[recursion_level] = assgnN(parser);
-        }
-        else if (check_Token(parser, TOKEN_WHLE))
-        {
-            parser_advance(parser);
-            node[recursion_level] = whileN(parser);
-        }
-        else if (parent->type != PROGRAM && check_Token(parser, TOKEN_RBRACE))
-        {
-            return node;
-        }
-        else
-        {
-            node[recursion_level] = atomN(parser);
-        }
-        recursion_level++;
-        node = realloc(node, (recursion_level + 1) * sizeof(nodeValue));
-    } while (!nullCursor(parser) && parser->token->type != TOKEN_UNKNOWN);
-    return node;
-}
-// node_t *statementN(parser_t *parser, node_t *parent)
-// {
-//     node_t *node = createNode();
-//     node->value.stmt = (statementNode *)malloc(sizeof(statementNode));
-//     node->type = STATEMENT;
-//     if (nullCursor(parser))
-//     {
-//         return node;
-//     }
-//     else if (match_tokens(parser, 6, TOKEN_BOOL, TOKEN_INT, TOKEN_DBL, TOKEN_FLOAT, TOKEN_CHAR, TOKEN_STR))
-//     {
-//         node->value.stmt->statement = assgnN(parser);
-//     }
-//     else if (check_Token(parser, TOKEN_WHLE))
-//     {
-//         parser_advance(parser);
-//         node->value.stmt->statement = whileN(parser);
-//     }
-//     else if (parent->type == WHILE && check_Token(parser, TOKEN_RBRACE))
-//     {
-//         return node;
-//     }
-//     else
-//     {
-//         return atomN(parser);
-//     }
-//     if (parser->token == (void *)0)
-//     {
-//         node->value.stmt->nextStatement = NULL;
-//     }
-//     else
-//     {
-//         node->value.stmt->nextStatement = statementN(parser, parent);
-//     }
-//     if ((node->value.stmt->statement == (void *)0) && (node->value.stmt->nextStatement == (void *)0))
-//     {
-//         free(node);
-//     }
-//     return node;
-// }
-/*
-numero y = 3 * 2 + 1;
-program
-statement
-assignment
-
-model = video from shawn
-architecture = crafting intepreters
-
-numero data
-y id
-= assgn
-&&
-1: 3                                // cursor = 3 // comp->atom returns 3
-2: muldiv(3, traverse)              // cursor = * // when backtracking stop at muldiv because multoken is spotted
-3: muldiv(3, 2)                     // cursor = 2 // righthand returns 2
-4: addsub(muldiv(3, 2), traverse)   // cursor = + // when backtracking stop at addsub because addtoken is spotted
-5: addsub(muldiv(3, 2), 1)          // cursor = 1 // now it will return this into the expr
-*/
-/*
-numero x = y + 3 * 2;
-numero
-x
-=
-addsub(y, muldiv(3, 2))
-*/
-
-node_t *whileN(parser_t *parser)
-{
-    node_t *node = createNode();
-    node->type = WHILE;
-    node->value.whl = (whileNode *)malloc(sizeof(whileNode));
-    node->value.whl->expr = literalTerm(parser);
-    match(parser, TOKEN_LBRACE);
-    node->value.whl->statements = statementN(parser, node);
-    match(parser, TOKEN_RBRACE);
-    return node;
-}
-node_t *assgnN(parser_t *parser)
-{
-    node_t *node = createNode();
-    node->value.assgn = (assgnNode *)malloc(sizeof(assgnNode));
-    node->type = ASSIGN;
-    node->value.assgn->dataType = atomN_from_previous(parser);                                                                                                        // cursor = x
-    node->value.assgn->identifier = parser_match(parser, TOKEN_ID);                                                                                                   // cursor = x
-    node->value.assgn->assignType = parser_match_tokens(parser, 6, TOKEN_EQUALS, TOKEN_ADD_ASGN, TOKEN_SUB_ASGN, TOKEN_MULT_ASGN, TOKEN_INTDIV_ASGN, TOKEN_DIV_ASGN); // cursor 3
-    node->value.assgn->expr = comparisonN(parser);
-    match(parser, TOKEN_SEMI);
-    return node;
-}
-node_t *comparisonN(parser_t *parser)
-{
-    node_t *node = inequalityN(parser);
-    while (match_tokens(parser, 2, TOKEN_NOT_EQ, TOKEN_EQ_TO))
-    {
-        node_t *compNode = createNode();
-        compNode->value.comp = (comparisonNode *)malloc(sizeof(comparisonNode));
-        compNode->value.comp->left = node;
-        compNode->value.comp->operation = atomN_from_previous(parser);
-        compNode->value.comp->right = inequalityN(parser);
-        node = compNode;
-        // in cases that matchtokens match a next token, this will still point to the previous compNode, despite compNode being given a new memory allocation
-        // so the previous compNode is different from the current compNode
-        // this means that compNode->value.ad->left will point to the previous compNode
-    }
-    return node;
-}
-node_t *inequalityN(parser_t *parser)
-{
-    node_t *node = addsubN(parser);
-    while (match_tokens(parser, 4, TOKEN_GREATER, TOKEN_GR_THAN_EQ, TOKEN_LESS, TOKEN_LS_THAN_EQ))
-    {
-        node_t *compNode = createNode();
-        compNode->value.ineq = (comparisonNode *)malloc(sizeof(comparisonNode));
-        compNode->value.ineq->left = node;
-        compNode->value.ineq->operation = atomN_from_previous(parser);
-        compNode->value.ineq->right = addsubN(parser);
-        node = compNode;
-    }
-    return node;
-}
-node_t *addsubN(parser_t *parser)
-{
-    node_t *node = muldivN(parser);
-    while (match_tokens(parser, 2, TOKEN_ADD, TOKEN_SUB))
-    {
-        node_t *compNode = createNode();
-        compNode->value.ad = (addsubNode *)malloc(sizeof(addsubNode));
-        compNode->value.ad->left = node;
-        compNode->value.ad->operation = atomN_from_previous(parser);
-        compNode->value.ad->right = muldivN(parser);
-        node = compNode;
-    }
-    return node;
-}
-node_t *muldivN(parser_t *parser)
-{
-    node_t *node = unaryN(parser);
-    while (match_tokens(parser, 2, TOKEN_MULT, TOKEN_DIV))
-    {
-        node_t *compNode = createNode();
-        compNode->value.md = (muldivNode *)malloc(sizeof(muldivNode));
-        compNode->value.md->left = node;
-        compNode->value.md->operation = atomN_from_previous(parser);
-        compNode->value.md->right = unaryN(parser);
-        node = compNode;
-    }
-    return node;
-}
-node_t *unaryN(parser_t *parser)
-{
-    while (match_tokens(parser, 1, TOKEN_NEGATE, TOKEN_SUB))
-    {
-        node_t *compNode = createNode();
-        compNode->value.unary = (unaryNode *)malloc(sizeof(unaryNode));
-        compNode->value.unary->operation = atomN_from_previous(parser);
-        compNode->value.unary->token = literalTerm(parser);
-        return compNode;
-    }
-    return literalTerm(parser);
-}
-node_t *literalTerm(parser_t *parser)
-{
-    if (check_Token(parser, TOKEN_LPAREN))
-    {
-        match(parser, TOKEN_LPAREN);
-        node_t *node = comparisonN(parser);
-        match(parser, TOKEN_RPAREN);
-        return node;
-    }
-    else if (match_tokens(parser, 2, TOKEN_ID, TOKEN_NUM))
-    {
-        return atomN_from_previous(parser);
-    }
-
-    return errorN(parser, "Unexpected Token ");
-}
-
-node_t *atomN(parser_t *parser)
-{
-    if (nullCursor(parser))
-    {
-        return errorN(parser, "End of line, expected");
-    }
-    node_t *node = createNode();
-    node->value.atom = (tokenNode *)malloc(sizeof(tokenNode));
-    node->type = ATOM;
-    node->value.atom->nodeToken = parser->token;
-    printf("ATOM: %s\n", node->value.atom->nodeToken->value);
-    parser_advance(parser);
-    return node;
-}
-node_t *atomN_from_previous(parser_t *parser)
-{
-    node_t *node = createNode();
-    node->value.atom = (tokenNode *)malloc(sizeof(tokenNode));
-    node->type = ATOM;
-    node->value.atom->nodeToken = parser_previous_peek(parser);
-    printf("ATOM: %s\n", node->value.atom->nodeToken->value);
-    return node;
-}
-node_t *errorN(parser_t *parser, char *errorMsg)
-{
-    if (nullCursor(parser))
-    {
-        printf("Error: %s", errorMsg);
-    }
-    else
-    {
-        printf("Error: %s on %s\n", errorMsg, parser_peek(parser)->value);
-    }
-
-    node_t *node = createNode();
-    node->value.error = (errorNode *)malloc(sizeof(errorNode));
-    node->type = ERROR;
-    node->value.error->error = errorMsg;
-    node->value.error->token = parser->token;
-    return node;
+    parser_t *parser = (parser_t *)malloc(sizeof(parser_t));
+    parser->toks = tokens;
+    parser->i = 0;
+    parser->tok = parser->toks[parser->i];
+    return parser;
 }
 
 void parser_advance(parser_t *parser)
 {
-    parser->cursor++;
-    parser->token = parser->tokens[parser->cursor];
+    parser->i++;
+    parser->tok = parser->toks[parser->i];
 }
+int nullCursor(parser_t *parser)
+{
+    if (parser->tok == (void *)0)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 token_t *parser_peek(parser_t *parser)
 {
-    return parser->token;
+    return parser->tok;
 }
 token_t *parser_advance_peek(parser_t *parser)
 {
-    token_t *token = parser->tokens[parser->cursor + 1];
+    token_t *token = parser->toks[parser->i + 1];
     return token;
 }
 token_t *parser_previous_peek(parser_t *parser)
 {
-    token_t *token = parser->tokens[parser->cursor - 1];
+    token_t *token = parser->toks[parser->i - 1];
     return token;
 }
 
@@ -383,12 +50,9 @@ node_t *parser_match(parser_t *parser, type token_to_match)
 {
     if (nullCursor(parser))
     {
-        printf("Parser Match mismatch %s, expected at: Line: %d Character: %d\n", token_type[token_to_match],
-               parser_previous_peek(parser)->lpos,
-               parser_previous_peek(parser)->cpos + 1);
-        exit(-3);
+        return errorN(parser, "Token Mismatch");
     }
-    else if (parser->token->type == token_to_match)
+    else if (parser->tok->type == token_to_match)
     {
         return atomN(parser);
     }
@@ -407,12 +71,9 @@ node_t *parser_match_tokens(parser_t *parser, int count, ...)
         tok = va_arg(args, type);
         if (nullCursor(parser))
         {
-            printf("Missing %s, expected at: Line: %d Character: %d\n", token_type[tok],
-                   parser_previous_peek(parser)->lpos,
-                   parser_previous_peek(parser)->cpos + 1);
-            exit(-3);
+            return errorN(parser, "Token Mismatch");
         }
-        else if (parser->token->type == tok)
+        else if (parser->tok->type == tok)
         {
             parser_advance(parser);
             return atomN_from_previous(parser);
@@ -420,36 +81,77 @@ node_t *parser_match_tokens(parser_t *parser, int count, ...)
     }
     return errorN(parser, "Error Node created");
 }
-int nullCursor(parser_t *parser)
+
+node_t *match_node(node_t *node, parser_t *parser, nodeType node_type)
 {
-    if (parser->token == (void *)0)
+    if (node->type == node_type)
     {
-        return 1;
+        return node;
+    }
+    return errorN(parser, "Inspection error");
+}
+node_t *match_nodes(node_t *node, parser_t *parser, int count, ...)
+{
+    va_list args;
+    va_start(args, count);
+    int tok;
+    for (int i = 0; i < count; i++)
+    {
+        tok = va_arg(args, int);
+        if (node == NULL)
+        {
+            return errorN(parser, "Missing expression");
+        }
+        else if (node->type == tok)
+        {
+            return node;
+        }
     }
     return 0;
 }
+
 int match(parser_t *parser, type token_to_match)
 {
 
     if (nullCursor(parser))
     {
-        printf("Mismatch Expecting %s, expected at: Line: %d Character: %d\n", token_type[token_to_match],
-               parser_previous_peek(parser)->lpos,
-               parser_previous_peek(parser)->cpos + 1);
-        exit(-3);
+        // printf("Mismatch Expecting %s, expected at: Line: %d Character: %d\n", token_type[token_to_match],
+        //        parser_previous_peek(parser)->lpos,
+        //        parser_previous_peek(parser)->cpos + 1);
+        // exit(-3);
+        return 0;
     }
     else if ((parser_peek(parser)->type == token_to_match))
     {
-        printf("DELT: %s\n", parser_peek(parser)->value);
+        // printf("DELT: %s\n", parser_peek(parser)->value);
         parser_advance(parser);
         return 1;
     }
     else
     {
-        printf("Expected %s, got %s\n", token_type[token_to_match], token_type[parser->token->type]);
-        exit(-5);
+        // printf("Expected %s, got %s\n", token_type[token_to_match], token_type[parser->tok->type]);
+        // exit(-5);
+        // printf("Expected %s, got %s\n", token_type[token_to_match], token_type[parser->tok->type]);
+        return 0;
     }
 }
+int check(parser_t *parser, type token_to_match)
+{
+
+    if (nullCursor(parser))
+    {
+        return 0;
+    }
+    else if ((parser_peek(parser)->type == token_to_match))
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 int match_tokens(parser_t *parser, int count, ...)
 {
     va_list args;
@@ -474,14 +176,15 @@ int match_tokens(parser_t *parser, int count, ...)
     }
     return 0;
 }
-int check_Token(parser_t *parser, type token_to_match)
+int check_Tokens(parser_t *parser, type token_to_match)
 {
     if (nullCursor(parser))
     {
-        printf("Check Failed %s, expected at: Line: %d Character: %d\n", token_type[token_to_match],
-               parser_previous_peek(parser)->lpos,
-               parser_previous_peek(parser)->cpos + 1);
-        exit(-3);
+        // printf("Check Failed %s Line: %d Character: %d\n", token_type[token_to_match],
+        //        parser_previous_peek(parser)->lpos,
+        //        parser_previous_peek(parser)->cpos + 1);
+        // exit(-3);
+        return 0;
     }
     else if ((parser_peek(parser)->type == token_to_match))
     {
@@ -492,16 +195,112 @@ int check_Token(parser_t *parser, type token_to_match)
         return 0;
     }
 }
-void traverse_statements(node_t **statements)
+
+void display_grammar(node_t *node)
 {
-    int x = 0;
-    while (statements[x] != NULL)
+    switch (node->type)
     {
-        if (x > 1000)
+    case ASSIGN:
+
+        break;
+
+    default:
+        break;
+    }
+}
+void traverse_statements(node_t **statements, int count, int depth)
+{
+    for (int x = 0; x < count || x > 1000; x++)
+    {
+        indent(depth);
+        switch (statements[x]->type)
         {
+        case WHILE:
+            printf("While:\n");
+            traverse(statements[x]->value.whl->expr, depth + 1);
+            traverse(statements[x]->value.whl->statements, depth + 1);
+            break;
+        case ASSIGN:
+            printf("Assign:\n");
+            traverse(statements[x], depth);
+            break;
+        case ERROR:
+            printf("Error:\n");
+            traverse(statements[x], depth + 1);
+            break;
+        case ATOM:
+            printf("ATOM: %s\n", statements[x]->value.atom->nodeToken->value);
+            break;
+        default:
             break;
         }
-        printf("Statement: %d\n", statements[x]->type);
-        x++;
     }
+}
+void traverse(node_t *node, int depth)
+{
+    switch (node->type)
+    {
+    case PROGRAM:
+        indent(depth);
+        printf("Program:\n");
+        traverse(node->value.program->statement, depth + 1);
+        break;
+    case STATEMENT:
+        indent(depth);
+        printf("Statements:\n");
+        traverse_statements(
+            node->value.stmt->statements,
+            node->value.stmt->stmtCount,
+            depth + 1);
+        break;
+    case ERROR:
+        indent(depth);
+        printf("ERROR: %s in [Line: %d, Pos: %d]\n",
+               node->value.error->error,
+               node->value.error->token->lpos,
+               node->value.error->token->cpos);
+        break;
+    case ATOM:
+        indent(depth);
+        printf("ATOM: %s\n", node->value.atom->nodeToken->value);
+        break;
+    case ASSIGN:
+        traverse(node->value.assgn->dataType, depth + 1);
+        traverse(node->value.assgn->identifier, depth + 1);
+        traverse(node->value.assgn->assignType, depth + 1);
+        traverse(node->value.assgn->expr, depth + 1);
+        break;
+    case COMPARISON:
+    case INEQUALITY:
+    case ADDSUB:
+    case MULDIV:
+        indent(depth);
+        printf("Operation:\n");
+        traverse(node->value.ad->left, depth + 1);
+        traverse(node->value.ad->operation, depth + 1);
+        traverse(node->value.ad->right, depth + 1);
+        break;
+    case UNARY:
+        indent(depth);
+        printf("Operation:\n");
+        traverse(node->value.unary->operation, depth + 1);
+        traverse(node->value.unary->token, depth + 1);
+        break;
+    default:
+        break;
+    }
+}
+void indent(int indent_count)
+{
+    for (int x = 0; x < indent_count; x++)
+    {
+        printf("\t");
+    }
+}
+void raise_error(const char *msg, ...)
+{
+    va_list args;
+    va_start(args, msg);
+    vprintf(msg, args);
+    va_end(args);
 }
