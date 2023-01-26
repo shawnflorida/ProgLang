@@ -136,7 +136,7 @@ int check_Tokens(parser_t *parser, int count, ...) {
 
 void traverse_statements(node_t **statements, int count, int depth) {
     if (statements[0] != NULL) {
-        printf("<statements> => <statement>\n");
+        printf("\n<statements> => <statement>\n");
         printf(
             "<statement> => <expr> | <dec_stmts> | <assign_stmts> | "
             "<con_stmts> |<iter_stmts> | <io_stmts>\n");
@@ -144,12 +144,10 @@ void traverse_statements(node_t **statements, int count, int depth) {
     for (int x = 0; x < count || x > 1000; x++) {
         switch (statements[x]->type) {
             case WHILE:
-                printf("<con_stmts> => <habang>\n");
-                printf("<habang> => (<expression>) {<statements>}");
+                printf("<iterative_stmts> => <habang>\n");
+                printf("<habang> => habang (<expression>) {<statements>}");
                 traverse(statements[x]->value.whl->expr, depth + 1);
-                printf("\n");
                 traverse(statements[x]->value.whl->statements, depth + 1);
-                printf("\n\n");
                 break;
             case ASSIGN:
                 printf("<assgn_stmts> => ");
@@ -173,30 +171,28 @@ void traverse_statements(node_t **statements, int count, int depth) {
                 printf("\n\n");
                 break;
             case IF:
-                printf("<cond_stmts> => <kung>\n");
-                printf("<kung> => (<expression>){<statements>}");
+                printf("<cond_stmts> => <kung_stmt>\n");
+                printf("<kung_stmt> => kung(<expression>){<statements>}");
                 traverse(statements[x]->value.f->condition, depth + 1);
-                printf("\n");
                 traverse(statements[x]->value.f->statements, depth + 1);
                 traverse(statements[x]->value.f->elseifns, depth + 1);
                 if (statements[x]->value.f->elsestmt != NULL) {
-                    printf("<kundi> => {<statements>}\n");
+                    printf("<cond_stmts> => <kundi_stmt>\n");
+                    printf("<kundi_stmt> => kundi{<statements>}\n");
                     traverse(statements[x]->value.f->elsestmt, depth + 2);
                 }
-                printf("\n\n");
                 break;
             case FOR:
-                printf("<con_stmts> => <para>\n");
+                printf("<iterative_stmts> => <para>\n");
                 printf(
                     "<para> => "
-                    "(<expression>;<expression>;<expression>){<statements>}\n");
+                    "para(<expression>;<expression>;<expression>){<statements>}"
+                    "\n");
                 printf("<expression> => ");
                 traverse(statements[x]->value.fr->variable, depth + 1);
                 traverse(statements[x]->value.fr->condition, depth + 1);
                 traverse(statements[x]->value.fr->iterator, depth + 1);
-                printf("\n");
                 traverse(statements[x]->value.fr->statements, depth + 1);
-                printf("\n\n");
                 break;
             case ERROR:
                 traverse(statements[x], depth + 1);
@@ -207,11 +203,19 @@ void traverse_statements(node_t **statements, int count, int depth) {
                 break;
             case SCAN:
                 printf("<io_stmts> => <kuha>\n");
-                printf("<kuha> => (kuha ");
+                printf("<kuha> => kuha( ");
                 traverse(statements[x], depth);
                 printf(");\n\n");
                 break;
             case PRINT_STR:
+                printf("<io_stmts> => <lahad>\n");
+                printf("<lahad> => lahad (");
+                if (statements[x]->value.printString->stringValue->type != ATOM)
+                    printf(" <expression> );");
+                traverse(statements[x], depth);
+                if (statements[x]->value.printString->stringValue->type == ATOM)
+                    printf(");\n\n");
+                break;
             case PRINT_VAL:
                 printf("<io_stmts> => <lahad>\n");
                 printf("<lahad> => lahad (");
@@ -228,10 +232,17 @@ void traverse_statements(node_t **statements, int count, int depth) {
                          depth);
                 printf("\n\n");
                 break;
+            case UNARY:
+                printf("\n<expression> => ");
+                traverse(statements[x]->value.unary->token, depth);
+                traverse(statements[x]->value.unary->operation, depth);
+                printf(";");
+                break;
             default:
                 break;
         }
     }
+    printf("\n");
 }
 void traverse(node_t *node, int depth) {
     if (node == NULL) {
@@ -239,7 +250,7 @@ void traverse(node_t *node, int depth) {
     }
     switch (node->type) {
         case PROGRAM:
-            printf("\n\n<program> => <statements>\n");
+            printf("\n\n<program> => <statements>");
             traverse(node->value.program->statement, depth + 1);
             break;
         case STATEMENT:
@@ -256,7 +267,8 @@ void traverse(node_t *node, int depth) {
             printf(" <%s> ", token_type[node->value.atom->nodeToken->type]);
             return;
         case ELSEIF:
-            printf("<sakali_stmt> => (<expression>) {<statements>}");
+            printf("<cond_stmts> => <sakali_stmt>\n");
+            printf("<sakali_stmt> => sakali (<expression>) {<statements>}");
             if (node->value.elif == NULL)
                 return;
             traverse(node->value.elif->condition, depth + 1);
@@ -294,16 +306,20 @@ void traverse(node_t *node, int depth) {
         case ADDSUB:
         case MULDIV:
             printf("\n<expression> => ");
+            if (node->value.comp->left->type != ATOM)
+                printf(" <expression>");
             traverse(node->value.comp->left, depth + 1);
             traverse(node->value.comp->operation, depth + 1);
             if (node->value.comp->right->type != ATOM)
-                printf("<expression>");
+                printf(" <expression>");
             traverse(node->value.comp->right, depth + 1);
             break;
         case UNARY:
             printf("\n<expression> =>");
-            traverse(node->value.unary->operation, depth + 1);
+            if (node->value.unary->token->type != ATOM)
+                printf(" <expression>");
             traverse(node->value.unary->token, depth + 1);
+            traverse(node->value.unary->operation, depth + 1);
             break;
         case SCAN:
             traverse(node->value.input->stringFormat, depth + 1);

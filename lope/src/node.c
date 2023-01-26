@@ -209,7 +209,7 @@ node_t *printN(parser_t *parser) {
     if (!match(parser, TOKEN_LPAREN))
         return errorN(parser, "[Lahad] Missing Left Parenthesis");
     // check if the nxt token is string
-    node->value.printString->stringValue = literalTerm(parser);
+    node->value.printString->stringValue = orN(parser);
 
     // check if the nxt token is right parenthesis, then the print value is
     // string
@@ -236,7 +236,7 @@ node_t *printN(parser_t *parser) {
 
             // get the string format
             printExpNode->value.printExpression->stringFormat =
-                node->value.printString->stringValue;
+                node->value.printString->stringValue;  // UwU
             free(node);
 
             // get the expression
@@ -333,6 +333,13 @@ node_t *assgnN(parser_t *parser) {
     node->value.assgn = (assgnNode *)malloc(sizeof(assgnNode));
     node->type = ASSIGN;
     node->value.assgn->identifier = atomN_from_previous(parser);
+    if (check_Tokens(parser, 2, TOKEN_INCR, TOKEN_DECR)) {
+        node->value.unary = (unaryNode *)malloc(sizeof(unaryNode));
+        node->type = UNARY;
+        node->value.unary->token = atomN_from_previous(parser);
+        node->value.unary->operation = atomN(parser);
+        return node;
+    }
     if (!match_tokens(parser, 7, TOKEN_EQUALS, TOKEN_ADD_ASGN, TOKEN_SUB_ASGN,
                       TOKEN_MULT_ASGN, TOKEN_INTDIV_ASGN, TOKEN_DIV_ASGN,
                       TOKEN_MOD_ASGN)) {
