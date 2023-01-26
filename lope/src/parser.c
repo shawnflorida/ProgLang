@@ -213,11 +213,20 @@ void traverse_statements(node_t **statements, int count, int depth) {
                 break;
             case PRINT_STR:
             case PRINT_VAL:
-            case PRINT_EXP:
                 printf("<io_stmts> => <lahad>\n");
                 printf("<lahad> => lahad (");
                 traverse(statements[x], depth);
                 printf(");\n\n");
+                break;
+            case PRINT_EXP:
+                printf("<io_stmts> => <lahad>\n");
+                printf("<lahad> => lahad (");
+                traverse(statements[x]->value.printExpression->stringFormat,
+                         depth);
+                printf(", <expression>);");
+                traverse(statements[x]->value.printExpression->expression,
+                         depth);
+                printf("\n\n");
                 break;
             default:
                 break;
@@ -230,7 +239,7 @@ void traverse(node_t *node, int depth) {
     }
     switch (node->type) {
         case PROGRAM:
-            printf("<program> => <statements>\n");
+            printf("\n\n<program> => <statements>\n");
             traverse(node->value.program->statement, depth + 1);
             break;
         case STATEMENT:
