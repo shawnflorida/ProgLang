@@ -197,19 +197,19 @@ void traverse_statements(node_t **statements, int count, int depth) {
                        statements[x]->value.atom->nodeToken->value);
                 break;
             case SCAN:
-                printf("Scan:\n");
+                printf("Kuha:\n");
                 traverse(statements[x], depth);
                 break;
             case PRINT_STR:
-                printf("Print:\n");
+                printf("Lahad:\n");
                 traverse(statements[x], depth);
                 break;
             case PRINT_VAL:
-                printf("Print:\n");
+                printf("Lahad:\n");
                 traverse(statements[x], depth);
                 break;
             case PRINT_EXP:
-                printf("Print:\n");
+                printf("Lahad:\n");
                 traverse(statements[x], depth);
                 break;
             default:
