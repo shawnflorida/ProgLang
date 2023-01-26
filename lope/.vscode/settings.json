@@ -1,6 +1,8 @@
 {
   "files.associations": {
     "parser.h": "c",
-    "type_traits": "c"
+    "type_traits": "c",
+    "cmath": "c",
+    "*.tcc": "c"
   }
 }

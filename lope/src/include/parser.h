@@ -25,11 +25,6 @@ void exec_parser(parser_t *parser);
  * */
 void parser_advance(parser_t *parser);
 /**
- * !! @brief for debugging, not yet implemented
- * */
-void raise_error(const char *msg, ...);
-
-/**
  * @brief generates an atom node that advances when match one of the tokens
  *
  * @param count count of tokens to match (used in vargs)

@@ -47,36 +47,36 @@ typedef enum {
     TOKEN_INTDIV_ASGN,  // ~=
 
     /* ADD: keywords */
-    TOKEN_WHLE,      // habang
-    TOKEN_IF,        // kung
-    TOKEN_ELSE,      // sakali
-    TOKEN_ELIF,      // kundi
-    TOKEN_FOR,       // para
-    TOKEN_FUNCTION,  // depinisyon/dep
-    TOKEN_IMPORT,    // angkat
-    TOKEN_TRY,       // subukan
-    TOKEN_EXCEPT,    // maliban
-    TOKEN_FINALLY,   // wakas
-    TOKEN_BREAK,     // tigil
-    TOKEN_CONTINUE,  // tuloy
-    TOKEN_RETURN,    // balik
-    TOKEN_AND,       // at
-    TOKEN_OR,        // o
-    TOKEN_IN,        // nasa
-    TOKEN_GLOBAL,    // lahat
+    TOKEN_HABANG,   // habang
+    TOKEN_KUNG,     // kung
+    TOKEN_SAKALI,   // sakali
+    TOKEN_KUNDI,    // kundi
+    TOKEN_PARA,     // para
+    TOKEN_DEP,      // depinisyon/dep
+    TOKEN_ANGKAT,   // angkat
+    TOKEN_SUBUKAN,  // subukan
+    TOKEN_MALIBAN,  // maliban
+    TOKEN_WAKAS,    // wakas
+    TOKEN_TIGIL,    // tigil
+    TOKEN_TULOY,    // tuloy
+    TOKEN_BALIK,    // balik
+    TOKEN_AT,       // at
+    TOKEN_O,        // o
+    TOKEN_NASA,     // nasa
+    TOKEN_LAHAT,    // lahat
 
     /* ADD: data types*/
-    TOKEN_BOOL,    // bolyan
-    TOKEN_BOOLT,   // totoo
-    TOKEN_BOOLM,   // mali
-    TOKEN_INT,     // numero / num
+    TOKEN_BOLYAN,  // bolyan
+    TOKEN_TOTOO,   // totoo
+    TOKEN_MALI,    // mali
+    TOKEN_NUMERO,  // numero / num
     TOKEN_NUM,     // num literals [0-9]*
-    TOKEN_STR,     // linya
+    TOKEN_LINYA,   // linya
     TOKEN_STRING,  // "[a-!]"
-    TOKEN_NULL,    // wala
-    TOKEN_FLOAT,   // punto / puntonumero
-    TOKEN_DBL,     // doble / doblenumero
-    TOKEN_CHAR,    // karakter / kar
+    TOKEN_WALA,    // wala
+    TOKEN_PUNTO,   // punto / puntonumero
+    TOKEN_DOBLE,   // doble / doblenumero
+    TOKEN_KAR,     // karakter / kar
 
     /* unknown token */
     TOKEN_UNKNOWN,  // invalid
@@ -88,9 +88,9 @@ typedef enum {
     TOKEN_COMMA,      // ,
     TOKEN_CHAR_LIT,   // "[a-z]"
     TOKEN_FLOAT_LIT,  // num.num | num
-    TOKEN_PRINT,      // lahad
-    TOKEN_SCAN,       // kuha
-    TOKEN_DEL,        // ibura
+    TOKEN_LAHAD,      // lahad
+    TOKEN_KUHA,       // kuha
+    TOKEN_IBURA,      // ibura
     TOKEN_FROM,       // angkat
     TOKEN_ADDRESS
 } type;

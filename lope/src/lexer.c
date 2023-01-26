@@ -291,7 +291,7 @@ token_t *lexer_get_next_token(lexer_t *lexer) {
                 if (lexer->contents[lexer->i + 1] == '|') {
                     return lexer_advance_with_token(
                         lexer,
-                        init_token(TOKEN_OR,
+                        init_token(TOKEN_O,
                                    lexer_get_operator_ext_as_string(lexer),
                                    lexer->l, startPos));
                 } else {
@@ -306,7 +306,7 @@ token_t *lexer_get_next_token(lexer_t *lexer) {
                 if (lexer->contents[lexer->i + 1] == '&') {
                     return lexer_advance_with_token(
                         lexer,
-                        init_token(TOKEN_AND,
+                        init_token(TOKEN_AT,
                                    lexer_get_operator_ext_as_string(lexer),
                                    lexer->l, startPos));
                 } else {
@@ -474,7 +474,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     if (value[4] == 'n') {
                         if (value[5] == 'g') {
                             if (value[6] == '\0')
-                                return init_token(TOKEN_WHLE, value, lexer->l,
+                                return init_token(TOKEN_HABANG, value, lexer->l,
                                                   startPos);
                             else
                                 goto SCAN_INDENTIFIER;
@@ -489,7 +489,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_ELSE - SAKALI | //TOKEN_TRY - SUBUKAN
+    // TOKEN_SAKALI - SAKALI | //TOKEN_SUBUKAN - SUBUKAN
     else if (value[0] == 's') {
         if (value[1] == 'a') {
             if (value[2] == 'k') {
@@ -497,7 +497,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     if (value[4] == 'l') {
                         if (value[5] == 'i') {
                             if (value[6] == '\0')
-                                return init_token(TOKEN_ELSE, value, lexer->l,
+                                return init_token(TOKEN_SAKALI, value, lexer->l,
                                                   startPos);
                             else
                                 goto SCAN_INDENTIFIER;
@@ -516,7 +516,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                         if (value[5] == 'a') {
                             if (value[6] == 'n') {
                                 if (value[7] == '\0')
-                                    return init_token(TOKEN_TRY, value,
+                                    return init_token(TOKEN_SUBUKAN, value,
                                                       lexer->l, startPos);
                                 else
                                     goto SCAN_INDENTIFIER;
@@ -533,13 +533,14 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_FOR - PARA | //TOKEN_FLOAT - PUNTONUMERO/PUNTO
+    // TOKEN_PARA - PARA | //TOKEN_PUNTO - PUNTONUMERO/PUNTO
     else if (value[0] == 'p') {
         if (value[1] == 'a') {
             if (value[2] == 'r') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_FOR, value, lexer->l, startPos);
+                        return init_token(TOKEN_PARA, value, lexer->l,
+                                          startPos);
                     else
                         goto SCAN_INDENTIFIER;
                 } else
@@ -558,7 +559,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                                             if (value[10] == 'o') {
                                                 if (value[11] == '\0')
                                                     return init_token(
-                                                        TOKEN_FLOAT, value,
+                                                        TOKEN_PUNTO, value,
                                                         lexer->l, startPos);
                                                 else
                                                     goto SCAN_INDENTIFIER;
@@ -573,7 +574,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                             } else
                                 goto SCAN_INDENTIFIER;
                         } else if (value[5] == '\0') {
-                            return init_token(TOKEN_FLOAT, value, lexer->l,
+                            return init_token(TOKEN_PUNTO, value, lexer->l,
                                               startPos);
                         } else
                             goto SCAN_INDENTIFIER;
@@ -586,18 +587,18 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_GLOBAL - LAHAT |  //TOKEN_STRING - LINYA
+    // TOKEN_LAHAT - LAHAT |  //TOKEN_STRING - LINYA
     else if (value[0] == 'l') {
         if (value[1] == 'a') {
             if (value[2] == 'h') {
                 if (value[3] == 'a') {
                     if (value[4] == 'd') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_PRINT, value, lexer->l,
+                            return init_token(TOKEN_LAHAD, value, lexer->l,
                                               startPos);
                     } else if (value[4] == 't') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_GLOBAL, value, lexer->l,
+                            return init_token(TOKEN_LAHAT, value, lexer->l,
                                               startPos);
                     } else
                         goto SCAN_INDENTIFIER;
@@ -610,7 +611,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 if (value[3] == 'y') {
                     if (value[4] == 'a') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_STR, value, lexer->l,
+                            return init_token(TOKEN_LINYA, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -623,14 +624,14 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_BOOLT - TOTOO
+    // TOKEN_TOTOO - TOTOO
     else if (value[0] == 't') {
         if (value[1] == 'o') {
             if (value[2] == 't') {
                 if (value[3] == 'o') {
                     if (value[4] == 'o') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_BOOLT, value, lexer->l,
+                            return init_token(TOKEN_TOTOO, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -645,7 +646,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 if (value[3] == 'i') {
                     if (value[4] == 'l') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_BREAK, value, lexer->l,
+                            return init_token(TOKEN_TIGIL, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -660,7 +661,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 if (value[3] == 'o') {
                     if (value[4] == 'y') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_CONTINUE, value, lexer->l,
+                            return init_token(TOKEN_TULOY, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -673,7 +674,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_INT - NUMERO / NUM | //TOKEN_IN - NASA
+    // TOKEN_NUMERO - NUMERO / NUM | //TOKEN_NASA - NASA
     else if (value[0] == 'n') {
         if (value[1] == 'u') {
             if (value[2] == 'm') {
@@ -681,7 +682,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     if (value[4] == 'r') {
                         if (value[5] == 'o') {
                             if (value[6] == '\0')
-                                return init_token(TOKEN_INT, value, lexer->l,
+                                return init_token(TOKEN_NUMERO, value, lexer->l,
                                                   startPos);
                             else
                                 goto SCAN_INDENTIFIER;
@@ -690,7 +691,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     } else
                         goto SCAN_INDENTIFIER;
                 } else if (value[3] == '\0') {
-                    return init_token(TOKEN_INT, value, lexer->l, startPos);
+                    return init_token(TOKEN_NUMERO, value, lexer->l, startPos);
                 } else
                     goto SCAN_INDENTIFIER;
             } else
@@ -699,7 +700,8 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
             if (value[2] == 's') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0') {
-                        return init_token(TOKEN_IN, value, lexer->l, startPos);
+                        return init_token(TOKEN_NASA, value, lexer->l,
+                                          startPos);
                     } else
                         goto SCAN_INDENTIFIER;
                 } else
@@ -709,7 +711,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_CHAR - KARAKTER/KAR | //TOKEN_ELIF - KUNDI | //TOKEN_IF - KUNG |
+    // TOKEN_KAR - KARAKTER/KAR | //TOKEN_KUNDI - KUNDI | //TOKEN_KUNG - KUNG |
     // //TOKEN_KUHA - KUHA
     else if (value[0] == 'k') {
         if (value[1] == 'a') {
@@ -720,7 +722,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                             if (value[6] == 'e') {
                                 if (value[7] == 'r') {
                                     if (value[8] == '\0') {
-                                        return init_token(TOKEN_CHAR, value,
+                                        return init_token(TOKEN_KAR, value,
                                                           lexer->l, startPos);
                                     } else
                                         goto SCAN_INDENTIFIER;
@@ -733,7 +735,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     } else
                         goto SCAN_INDENTIFIER;
                 } else if (value[3] == '\0') {
-                    return init_token(TOKEN_CHAR, value, lexer->l, startPos);
+                    return init_token(TOKEN_KAR, value, lexer->l, startPos);
                 } else
                     goto SCAN_INDENTIFIER;
             } else
@@ -743,7 +745,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 if (value[3] == 'd') {
                     if (value[4] == 'i') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_ELIF, value, lexer->l,
+                            return init_token(TOKEN_KUNDI, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -751,7 +753,8 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                         goto SCAN_INDENTIFIER;
                 } else if (value[3] == 'g') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_IF, value, lexer->l, startPos);
+                        return init_token(TOKEN_KUNG, value, lexer->l,
+                                          startPos);
                     else
                         goto SCAN_INDENTIFIER;
                 } else
@@ -759,7 +762,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
             } else if (value[2] == 'h') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_SCAN, value, lexer->l,
+                        return init_token(TOKEN_KUHA, value, lexer->l,
                                           startPos);
                     else
                         goto SCAN_INDENTIFIER;
@@ -770,7 +773,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_FUNCTION - DEPINISYON/DEP - //TOKEN_DBL - DOBLENUMERO/DOBLE
+    // TOKEN_DEP - DEPINISYON/DEP - //TOKEN_DOBLE - DOBLENUMERO/DOBLE
     else if (value[0] == 'd') {
         if (value[1] == 'e') {
             if (value[2] == 'p') {
@@ -783,8 +786,8 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                                         if (value[9] == 'n') {
                                             if (value[10] == '\0')
                                                 return init_token(
-                                                    TOKEN_FUNCTION, value,
-                                                    lexer->l, startPos);
+                                                    TOKEN_DEP, value, lexer->l,
+                                                    startPos);
                                             else
                                                 goto SCAN_INDENTIFIER;
                                         } else
@@ -800,8 +803,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     } else
                         goto SCAN_INDENTIFIER;
                 } else if (value[3] == '\0') {
-                    return init_token(TOKEN_FUNCTION, value, lexer->l,
-                                      startPos);
+                    return init_token(TOKEN_DEP, value, lexer->l, startPos);
                 } else
                     goto SCAN_INDENTIFIER;
             } else
@@ -818,7 +820,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                                             if (value[10] == 'o') {
                                                 if (value[11] == '\0') {
                                                     return init_token(
-                                                        TOKEN_DBL, value,
+                                                        TOKEN_DOBLE, value,
                                                         lexer->l, startPos);
                                                 } else
                                                     goto SCAN_INDENTIFIER;
@@ -833,7 +835,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                             } else
                                 goto SCAN_INDENTIFIER;
                         } else if (value[5] == '\0')
-                            return init_token(TOKEN_DBL, value, lexer->l,
+                            return init_token(TOKEN_DOBLE, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -846,7 +848,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_IMPORT - ANGKAT | //TOKEN_AND - AT
+    // TOKEN_ANGKAT - ANGKAT | //TOKEN_AT - AT
     else if (value[0] == 'a') {
         if (value[1] == 'n') {
             if (value[2] == 'g') {
@@ -854,7 +856,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     if (value[4] == 'a') {
                         if (value[5] == 't') {
                             if (value[6] == '\0')
-                                return init_token(TOKEN_IMPORT, value, lexer->l,
+                                return init_token(TOKEN_ANGKAT, value, lexer->l,
                                                   startPos);
                             else
                                 goto SCAN_INDENTIFIER;
@@ -868,13 +870,13 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 goto SCAN_INDENTIFIER;
         } else if (value[1] == 't') {
             if (value[2] == '\0')
-                return init_token(TOKEN_AND, value, lexer->l, startPos);
+                return init_token(TOKEN_AT, value, lexer->l, startPos);
             else
                 goto SCAN_INDENTIFIER;
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_EXCEPT - MALIBAN | //TOKEN_BOOLM - MALI | //TOKEN_MULA - MULA
+    // TOKEN_MALIBAN - MALIBAN | //TOKEN_MALI - MALI | //TOKEN_MULA - MULA
     else if (value[0] == 'm') {
         if (value[1] == 'a') {
             if (value[2] == 'l') {
@@ -883,7 +885,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                         if (value[5] == 'a') {
                             if (value[6] == 'n') {
                                 if (value[7] == '\0') {
-                                    return init_token(TOKEN_EXCEPT, value,
+                                    return init_token(TOKEN_MALIBAN, value,
                                                       lexer->l, startPos);
                                 } else
                                     goto SCAN_INDENTIFIER;
@@ -892,7 +894,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                         } else
                             goto SCAN_INDENTIFIER;
                     } else if (value[4] == '\0') {
-                        return init_token(TOKEN_BOOLM, value, lexer->l,
+                        return init_token(TOKEN_MALI, value, lexer->l,
                                           startPos);
                     } else
                         goto SCAN_INDENTIFIER;
@@ -915,14 +917,14 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_FINALLY - WAKAS | //TOKEN_NULL - WALA
+    // TOKEN_WAKAS - WAKAS | //TOKEN_WALA - WALA
     else if (value[0] == 'w') {
         if (value[1] == 'a') {
             if (value[2] == 'k') {
                 if (value[3] == 'a') {
                     if (value[4] == 's') {
                         if (value[5] == '\0') {
-                            return init_token(TOKEN_FINALLY, value, lexer->l,
+                            return init_token(TOKEN_WAKAS, value, lexer->l,
                                               startPos);
                         } else
                             goto SCAN_INDENTIFIER;
@@ -933,7 +935,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
             } else if (value[2] == 'l') {
                 if (value[3] == 'a') {
                     if (value[4] == '\0')
-                        return init_token(TOKEN_NULL, value, lexer->l,
+                        return init_token(TOKEN_WALA, value, lexer->l,
                                           startPos);
                     else
                         goto SCAN_INDENTIFIER;
@@ -951,7 +953,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 if (value[3] == 'a') {
                     if (value[4] == 'd') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_PRINT, value, lexer->l,
+                            return init_token(TOKEN_LAHAD, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -964,14 +966,14 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_BREAK - TIGIL | //TOKEN_CONTINUE - TULOY
+    // TOKEN_TIGIL - TIGIL | //TOKEN_TULOY - TULOY
     else if (value[0] == 't') {
         if (value[1] == 'i') {
             if (value[2] == 'g') {
                 if (value[3] == 'i') {
                     if (value[4] == 'l') {
                         if (value[5] == '\0') {
-                            return init_token(TOKEN_BREAK, value, lexer->l,
+                            return init_token(TOKEN_TIGIL, value, lexer->l,
                                               startPos);
                         } else
                             goto SCAN_INDENTIFIER;
@@ -986,7 +988,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 if (value[3] == 'o') {
                     if (value[4] == 'y') {
                         if (value[5] == '\0') {
-                            return init_token(TOKEN_CONTINUE, value, lexer->l,
+                            return init_token(TOKEN_TULOY, value, lexer->l,
                                               startPos);
                         } else
                             goto SCAN_INDENTIFIER;
@@ -999,14 +1001,14 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_RETURN - BALIK | //TOKEN_BOOL - BOLYAN
+    // TOKEN_BALIK - BALIK | //TOKEN_BOLYAN - BOLYAN
     else if (value[0] == 'b') {
         if (value[1] == 'a') {
             if (value[2] == 'l') {
                 if (value[3] == 'i') {
                     if (value[4] == 'k') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_RETURN, value, lexer->l,
+                            return init_token(TOKEN_BALIK, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
@@ -1022,7 +1024,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                     if (value[4] == 'a') {
                         if (value[5] == 'n') {
                             if (value[6] == '\0')
-                                return init_token(TOKEN_BOOL, value, lexer->l,
+                                return init_token(TOKEN_BOLYAN, value, lexer->l,
                                                   startPos);
                             else
                                 goto SCAN_INDENTIFIER;
@@ -1037,10 +1039,10 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
         } else
             goto SCAN_INDENTIFIER;
     }
-    // TOKEN_OR - O
+    // TOKEN_O - O
     else if (value[0] == 'o') {
         if (value[1] == '\0')
-            return init_token(TOKEN_OR, value, lexer->l, startPos);
+            return init_token(TOKEN_O, value, lexer->l, startPos);
         else
             goto SCAN_INDENTIFIER;
     }
@@ -1051,7 +1053,7 @@ token_t *lexer_collect_keyword(lexer_t *lexer) {
                 if (value[3] == 'r') {
                     if (value[4] == 'a') {
                         if (value[5] == '\0')
-                            return init_token(TOKEN_DEL, value, lexer->l,
+                            return init_token(TOKEN_IBURA, value, lexer->l,
                                               startPos);
                         else
                             goto SCAN_INDENTIFIER;
