@@ -159,6 +159,10 @@ void traverse_statements(node_t **statements, int count, int depth) {
                 printf("Assignment:\n");
                 traverse(statements[x], depth);
                 break;
+            case DECLARATION:
+                printf("Declaration:\n");
+                traverse(statements[x], depth);
+                break;
             case TYPED_ASSIGN:
                 printf("Declaration:\n");
                 traverse(statements[x], depth);
@@ -177,6 +181,8 @@ void traverse_statements(node_t **statements, int count, int depth) {
 
             case FOR:
                 printf("Para:\n");
+                indent(depth + 1);
+                printf("Expression:\n");
                 traverse(statements[x]->value.fr->variable, depth + 1);
                 traverse(statements[x]->value.fr->condition, depth + 1);
                 traverse(statements[x]->value.fr->iterator, depth + 1);
@@ -189,6 +195,22 @@ void traverse_statements(node_t **statements, int count, int depth) {
             case ATOM:
                 printf("Constant: %s\n",
                        statements[x]->value.atom->nodeToken->value);
+                break;
+            case SCAN:
+                printf("Scan:\n");
+                traverse(statements[x], depth);
+                break;
+            case PRINT_STR:
+                printf("Print:\n");
+                traverse(statements[x], depth);
+                break;
+            case PRINT_VAL:
+                printf("Print:\n");
+                traverse(statements[x], depth);
+                break;
+            case PRINT_EXP:
+                printf("Print:\n");
+                traverse(statements[x], depth);
                 break;
             default:
                 break;
@@ -213,9 +235,10 @@ void traverse(node_t *node, int depth) {
             break;
         case ERROR:
             indent(depth);
-            printf("Error: %s in [Line: %d, Pos: %d]\n",
+            printf("Error: %s in [Line: %d, Pos: %d] Token:(\'%s\')\n",
                    node->value.error->error, node->value.error->token->lpos,
-                   node->value.error->token->cpos);
+                   node->value.error->token->cpos,
+                   node->value.error->token->value);
             break;
         case ATOM:
             indent(depth);
@@ -241,6 +264,10 @@ void traverse(node_t *node, int depth) {
             traverse(node->value.assgn->assignType, depth + 1);
             traverse(node->value.assgn->expr, depth + 1);
             break;
+        case DECLARATION:
+            traverse(node->value.decStmnt->dataType, depth + 1);
+            traverse(node->value.decStmnt->identifier, depth + 1);
+            break;
         case AND:
         case OR:
         case EQUALITY:
@@ -258,6 +285,21 @@ void traverse(node_t *node, int depth) {
             printf("Expression:\n");
             traverse(node->value.unary->operation, depth + 1);
             traverse(node->value.unary->token, depth + 1);
+            break;
+        case SCAN:
+            traverse(node->value.input->stringFormat, depth + 1);
+            traverse(node->value.input->varAddress, depth + 1);
+            break;
+        case PRINT_STR:
+            traverse(node->value.printString->stringValue, depth + 1);
+            break;
+        case PRINT_VAL:
+            traverse(node->value.printValue->stringFormat, depth + 1);
+            traverse(node->value.printValue->identifier, depth + 1);
+            break;
+        case PRINT_EXP:
+            traverse(node->value.printExpression->stringFormat, depth + 1);
+            traverse(node->value.printExpression->expression, depth + 1);
             break;
         default:
             break;

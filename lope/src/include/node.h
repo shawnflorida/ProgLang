@@ -27,6 +27,11 @@ typedef enum {
     FOR,
     ERROR,
     EMPTY,
+    SCAN,
+    PRINT_STR,
+    PRINT_VAL,
+    PRINT_EXP,
+    DECLARATION,
     ATOM
 } nodeType;
 typedef struct {
@@ -67,7 +72,7 @@ typedef struct {
     node_t *identifier;
     node_t *assignType;
     node_t *expr;
-} typedAssgnNode;
+} declarationNode;
 typedef struct {
     node_t *identifier;
     node_t *assignType;
@@ -85,12 +90,31 @@ typedef struct {
     node_t *nextelseif;
 } elseifNode;
 
+typedef struct {
+    node_t *dataType;
+    node_t *identifier;
+} initializationNode;
+typedef struct {
+    node_t *stringFormat;
+    node_t *varAddress;
+} scanNode;
+typedef struct {
+    node_t *stringValue;
+} printStringNode;
+typedef struct {
+    node_t *stringFormat;
+    node_t *identifier;
+} printValueNode;
+typedef struct {
+    node_t *stringFormat;
+    node_t *expression;
+} printExp;
+
 typedef union {
     programNode *program;
     statementNode *stmt;
     whileNode *whl;
     forNode *fr;
-    typedAssgnNode *t_Assgn;
     assgnNode *assgn;
     comparisonNode *comp;
     unaryNode *unary;
@@ -98,6 +122,12 @@ typedef union {
     errorNode *error;
     ifNode *f;
     elseifNode *elif;
+    initializationNode *decStmnt;
+    declarationNode *t_Assgn;
+    scanNode *input;
+    printStringNode *printString;
+    printValueNode *printValue;
+    printExp *printExpression;
 } nodeValue;
 
 struct node_t {
@@ -134,8 +164,11 @@ node_t *whileN(parser_t *parser);
 node_t *forN(parser_t *parser);
 node_t *ifN(parser_t *parser);
 node_t *elseifN(parser_t *parser);
+node_t *initializationN(parser_t *parser);
+node_t *declarationN(parser_t *parser);
+node_t *scanN(parser_t *parser);
+node_t *printN(parser_t *parser);
 // assign = [TOKEN_TYPE] [TOKEN_ID] [TOKEN_ANY_ASSIGN] <comparison> [TOKEN_SEMI]
-node_t *t_AssgnN(parser_t *parser);
 node_t *assgnN(parser_t *parser);
 // comparison = inequality ([== | !=] inequality)*
 node_t *orN(parser_t *parser);

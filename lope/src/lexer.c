@@ -312,7 +312,7 @@ token_t *lexer_get_next_token(lexer_t *lexer) {
                 } else {
                     return lexer_advance_with_token(
                         lexer,
-                        init_token(TOKEN_UNKNOWN,
+                        init_token(TOKEN_ADDRESS,
                                    lexer_get_current_char_as_string(lexer),
                                    lexer->l, startPos));
                 }

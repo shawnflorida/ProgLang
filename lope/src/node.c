@@ -24,15 +24,17 @@ node_t *stmtN(parser_t *parser, node_t *parent) {
     while (!nullCursor(parser)) {
         if (match_tokens(parser, 6, TOKEN_BOOL, TOKEN_INT, TOKEN_DBL,
                          TOKEN_FLOAT, TOKEN_CHAR, TOKEN_STR)) {
-            nodes[statement_index] = t_AssgnN(parser);
+            nodes[statement_index] = initializationN(parser);
             if (!match(parser, TOKEN_SEMI))
-                nodes[statement_index] = errorN(
-                    parser, "Missing Semi-colon on Declaration Statement");
+                return errorN(parser, "[Declaration] Missing Semi-colon");
         } else if (match_tokens(parser, 2, TOKEN_ID, TOKEN_CAPITAL)) {
             nodes[statement_index] = assgnN(parser);
             if (!match(parser, TOKEN_SEMI))
-                nodes[statement_index] = errorN(
-                    parser, "Missing Semi-colon on Assignment Statement");
+                return errorN(parser, "[Assignment] Missing Semi-colon");
+        } else if (match(parser, TOKEN_SCAN)) {
+            nodes[statement_index] = scanN(parser);
+        } else if (match(parser, TOKEN_PRINT)) {
+            nodes[statement_index] = printN(parser);
         } else if (match(parser, TOKEN_WHLE)) {
             nodes[statement_index] = whileN(parser);
         } else if (match(parser, TOKEN_IF)) {
@@ -68,13 +70,11 @@ node_t *forN(parser_t *parser) {
     node_t *node = createNode();  // FOR
     node->type = FOR;
     node->value.fr = (forNode *)malloc(sizeof(forNode));
-    //(int x = 2)
-    //(;)
     if (!match(parser, TOKEN_LPAREN))
         return errorN(parser, "[Para] Missing Left Parenthesis");
     if (match_tokens(parser, 6, TOKEN_BOOL, TOKEN_INT, TOKEN_DBL, TOKEN_FLOAT,
                      TOKEN_CHAR, TOKEN_STR)) {
-        node->value.fr->variable = t_AssgnN(parser);
+        node->value.fr->variable = declarationN(parser);
     } else if (match(parser, TOKEN_ID)) {
         node->value.fr->variable = assgnN(parser);
     }
@@ -167,9 +167,9 @@ node_t *elseifN(parser_t *parser) {
         node->value.elif->nextelseif = NULL;
     return node;
 }
-node_t *t_AssgnN(parser_t *parser) {
+node_t *declarationN(parser_t *parser) {
     node_t *node = createNode();
-    node->value.t_Assgn = (typedAssgnNode *)malloc(sizeof(typedAssgnNode));
+    node->value.t_Assgn = (declarationNode *)malloc(sizeof(declarationNode));
     node->type = TYPED_ASSIGN;
     node->value.t_Assgn->dataType = atomN_from_previous(parser);
     node->value.t_Assgn->identifier =
@@ -180,6 +180,133 @@ node_t *t_AssgnN(parser_t *parser) {
     node->value.t_Assgn->expr = orN(parser);
     return node;
 }
+node_t *scanN(parser_t *parser) {
+    node_t *node = createNode();
+    node->type = SCAN;
+    node->value.input = (scanNode *)malloc(sizeof(scanNode));
+
+    if (!match(parser, TOKEN_LPAREN))
+        return errorN(parser, "[Kuha] Missing Left Parenthesis");
+    // check if the nxt token is string
+    node->value.input->stringFormat = literalTerm(parser);
+    // check if the nxt token is comma
+    if (!match(parser, TOKEN_COMMA))
+        return errorN(parser, "[Kuha] Missing Comma");
+    // check if the nxt token is an address=
+    if (!match(parser, TOKEN_ADDRESS))
+        return errorN(parser, "[Kuha] Missing Variabe Address");
+    node->value.input->varAddress = parser_match(parser, TOKEN_ID);
+    if (!match(parser, TOKEN_RPAREN))
+        return errorN(parser, "[Kuha] Missing Variable");
+    if (!match(parser, TOKEN_SEMI))
+        return errorN(parser, "[Kuha] Missing Semi-colon");
+    return node;
+}
+node_t *printN(parser_t *parser) {
+    node_t *node = createNode();
+    node->type = PRINT_STR;
+    node->value.printString =
+        (printStringNode *)malloc(sizeof(printStringNode));
+
+    if (!match(parser, TOKEN_LPAREN))
+        return errorN(parser, "[Lahad] Missing Left Parenthesis");
+    // check if the nxt token is string
+    node->value.printString->stringValue = literalTerm(parser);
+
+    // check if the nxt token is right parenthesis, then the print value is
+    // string
+    if (check(parser, TOKEN_RPAREN)) {
+        match(parser, TOKEN_RPAREN);
+        if (match(parser, TOKEN_SEMI))
+            return node;
+        else
+            return errorN(parser, "[Lahad] Missing Semi-colon");
+
+    } else if (check(parser, TOKEN_SEMI))
+        return errorN(parser, "[Lahad] Missing Right Parenthesis");
+    // if TOKEN_COMMA, ask if it's print value or print expression
+    else if (check(parser, TOKEN_COMMA)) {
+        match(parser, TOKEN_COMMA);
+
+        // ask if the nxt token is TOKEN_NUM, TOKEN_FLOAT, then it's print the
+        // expression
+        if (check(parser, TOKEN_NUM) || check(parser, TOKEN_FLOAT)) {
+            node_t *printExpNode = createNode();
+            printExpNode->type = PRINT_EXP;
+            printExpNode->value.printExpression =
+                (printExp *)malloc(sizeof(printExp));
+
+            // get the string format
+            printExpNode->value.printExpression->stringFormat =
+                node->value.printString->stringValue;
+            free(node);
+
+            // get the expression
+            printExpNode->value.printExpression->expression = orN(parser);
+            if (!match(parser, TOKEN_RPAREN))
+                return errorN(parser, "[Lahad] Missing Right Parenthesis");
+            if (!match(parser, TOKEN_SEMI))
+                return errorN(parser,
+                              "[Lahad] Missing Semi-colon on Lahad Statement");
+            return printExpNode;
+        }
+
+        node_t *printNode = createNode();
+        printNode->type = PRINT_VAL;
+        printNode->value.printValue =
+            (printValueNode *)malloc(sizeof(printValueNode));
+
+        // get the string format
+        printNode->value.printValue->stringFormat =
+            node->value.printString->stringValue;
+        free(node);
+
+        // get the identifier
+        printNode->value.printValue->identifier =
+            parser_match(parser, TOKEN_ID);
+
+        if (!match(parser, TOKEN_RPAREN))
+            return errorN(parser, "[Lahad] Missing Right Parenthesis");
+        if (!match(parser, TOKEN_SEMI))
+            return errorN(parser,
+                          "[Lahad] Missing Semi-colon on Lahad Statement");
+        return printNode;
+    } else
+        return errorN(parser, "[Lahad] Missing Token Here");
+}
+
+node_t *initializationN(parser_t *parser) {
+    node_t *assgn_node = createNode();
+    assgn_node->value.t_Assgn =
+        (declarationNode *)malloc(sizeof(declarationNode));
+
+    node_t *dec_node = createNode();
+    dec_node->value.decStmnt =
+        (initializationNode *)malloc(sizeof(initializationNode));
+    assgn_node->type = TYPED_ASSIGN;
+    dec_node->type = DECLARATION;
+
+    assgn_node->value.t_Assgn->dataType = atomN_from_previous(parser);
+    dec_node->value.decStmnt->dataType = assgn_node->value.t_Assgn->dataType;
+
+    assgn_node->value.decStmnt->identifier = parser_match(parser, TOKEN_ID);
+    dec_node->value.decStmnt->identifier =
+        assgn_node->value.t_Assgn->identifier;
+    if (check(parser, TOKEN_SEMI)) {
+        free(assgn_node);
+        return dec_node;
+    } else {
+        free(dec_node);
+        assgn_node->value.t_Assgn->assignType = parser_match_tokens(
+            parser, 6, TOKEN_EQUALS, TOKEN_ADD_ASGN, TOKEN_SUB_ASGN,
+            TOKEN_MULT_ASGN, TOKEN_INTDIV_ASGN,
+            TOKEN_DIV_ASGN);  // cursor 3
+
+        assgn_node->value.t_Assgn->expr = orN(parser);
+        return assgn_node;
+    }
+}
+
 node_t *assgnN(parser_t *parser) {
     node_t *node = createNode();
     node->value.assgn = (assgnNode *)malloc(sizeof(assgnNode));
