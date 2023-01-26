@@ -5,11 +5,10 @@
 #include "node.h"
 
 // Parser struct
-struct parser_t
-{
-    token_t **toks; // token stream
-    token_t *tok;   // current token
-    int i;          // index of the parser
+struct parser_t {
+    token_t **toks;  // token stream
+    token_t *tok;    // current token
+    int i;           // index of the parser
 };
 
 /**
@@ -61,22 +60,25 @@ token_t *parser_previous_peek(parser_t *parser);
 // helper methods to advance and check the cursor's value
 
 /**
- * @brief advances and consumes the token. returns true if match, exits the program if not and raises an error
+ * @brief advances and consumes the token. returns true if match, exits the
+ * program if not and raises an error
  *
  * @param token_to_match type of token
  * */
 int match(parser_t *parser, type token_to_match);
 /**
- * @brief used for matching nodes, useful for statements that needs logical evaluation
- *  such as while who doesn't want an addition, though it works in other languages
+ * @brief used for matching nodes, useful for statements that needs logical
+ * evaluation such as while who doesn't want an addition, though it works in
+ * other languages
  * @param node
  * @param node_type
  * @return int
  */
 node_t *match_node(node_t *node, parser_t *parser, nodeType node_type);
 /**
- * @brief used for matching nodes, useful for statements that needs logical evaluation
- *  such as while who doesn't want an addition, though it works in other languages
+ * @brief used for matching nodes, useful for statements that needs logical
+ * evaluation such as while who doesn't want an addition, though it works in
+ * other languages
  * @param node
  * @param count amount of nodes to be matched
  * @param ... the node types to be matched (must be an int)
@@ -102,7 +104,7 @@ int check(parser_t *parser, type token_to_match);
  * @brief checks only doesn't consume and doesn't advance
  * @param token_to_match type of token
  */
-int check_Tokens(parser_t *parser, type token_to_match);
+int check_Tokens(parser_t *parser, int count, ...);
 // check if eoF
 int nullCursor(parser_t *parser);
 
@@ -128,7 +130,8 @@ void traverse_statements(node_t **statements, int count, int depth);
  */
 void traverse(node_t *node, int depth);
 /**
- * @brief used for displaying the parse tree, indents according to the depth provided
+ * @brief used for displaying the parse tree, indents according to the depth
+ * provided
  *
  * @param indent_count
  */

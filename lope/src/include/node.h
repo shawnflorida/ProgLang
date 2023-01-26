@@ -1,99 +1,106 @@
 #ifndef NODES
 #define NODES
 
-#include "token.h"
-
+#include "stdarg.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "stdarg.h"
+#include "token.h"
 
 typedef struct node_t node_t;
 typedef struct parser_t parser_t;
 // Nodetype enums
-typedef enum
-{
+typedef enum {
+    TYPED_ASSIGN,
     ASSIGN,
     PROGRAM,
     STATEMENT,
-    COMPARISON,
+    EQUALITY,
     INEQUALITY,
     ADDSUB,
     MULDIV,
     UNARY,
+    AND,
+    OR,
+    IF,
+    ELSEIF,
     WHILE,
+    FOR,
     ERROR,
+    EMPTY,
     ATOM
 } nodeType;
-
-typedef struct
-{
+typedef struct {
     node_t **statements;
     int stmtCount;
 } statementNode;
-typedef struct
-{
+typedef struct {
     node_t *statement;
 } programNode;
-typedef struct
-{
+typedef struct {
     char *error;
     token_t *token;
 } errorNode;
-typedef struct
-{
+typedef struct {
     token_t *nodeToken;
 } tokenNode;
-typedef struct
-{
+typedef struct {
+    node_t *variable;
+    node_t *condition;
+    node_t *iterator;
+    node_t *statements;
+} forNode;
+typedef struct {
     node_t *expr;
     node_t *statements;
-} whileNode; // *WHILE
-typedef struct
-{
+} whileNode;  // *WHILE
+typedef struct {
     node_t *operation;
     node_t *token;
-} unaryNode; // *UNARY
-typedef struct
-{
-    node_t *left;      // expr
-    node_t *operation; // tokenNode
-    node_t *right;     // expr
-} comparisonNode, inequalityNode, addsubNode, muldivNode;
-typedef struct
-{
+} unaryNode;  // *UNARY
+typedef struct {
+    node_t *left;       // expr
+    node_t *operation;  // tokenNode
+    node_t *right;      // expr
+} comparisonNode;
+typedef struct {
     node_t *dataType;
     node_t *identifier;
     node_t *assignType;
     node_t *expr;
+} typedAssgnNode;
+typedef struct {
+    node_t *identifier;
+    node_t *assignType;
+    node_t *expr;
 } assgnNode;
+typedef struct {
+    node_t *condition;
+    node_t *statements;
+    node_t *elseifns;
+    node_t *elsestmt;
+} ifNode;
+typedef struct {
+    node_t *condition;
+    node_t *statements;
+    node_t *nextelseif;
+} elseifNode;
 
-// typedef struct
-// {
-//     node_t **block;
-//     int count;
-// } blockHolder;
-// typedef struct
-// {
-//     node_t *statements;
-// } programNode;
-
-typedef union
-{
+typedef union {
     programNode *program;
     statementNode *stmt;
     whileNode *whl;
+    forNode *fr;
+    typedAssgnNode *t_Assgn;
     assgnNode *assgn;
     comparisonNode *comp;
-    inequalityNode *ineq;
-    muldivNode *md;
-    addsubNode *ad;
     unaryNode *unary;
     tokenNode *atom;
     errorNode *error;
+    ifNode *f;
+    elseifNode *elif;
 } nodeValue;
 
-struct node_t
-{
+struct node_t {
     nodeType type;
     nodeValue value;
 };
@@ -124,10 +131,16 @@ node_t *programN(parser_t *parser);
  */
 node_t *stmtN(parser_t *parser, node_t *parent);
 node_t *whileN(parser_t *parser);
+node_t *forN(parser_t *parser);
+node_t *ifN(parser_t *parser);
+node_t *elseifN(parser_t *parser);
 // assign = [TOKEN_TYPE] [TOKEN_ID] [TOKEN_ANY_ASSIGN] <comparison> [TOKEN_SEMI]
+node_t *t_AssgnN(parser_t *parser);
 node_t *assgnN(parser_t *parser);
 // comparison = inequality ([== | !=] inequality)*
-node_t *comparisonN(parser_t *parser);
+node_t *orN(parser_t *parser);
+node_t *andN(parser_t *parser);
+node_t *equalityN(parser_t *parser);
 // inequality = addsub ([+ | -] addsub)*
 node_t *inequalityN(parser_t *parser);
 // addsub = muldiv ([* | /] muldiv)*
@@ -135,6 +148,7 @@ node_t *addsubN(parser_t *parser);
 // muldiv = unary ([! | -]unary)*
 node_t *muldivN(parser_t *parser);
 // unary = literal (literal)*
+node_t *negateN(parser_t *parser);
 node_t *unaryN(parser_t *parser);
 // literal = atom | comparison
 node_t *literalTerm(parser_t *parser);
@@ -148,7 +162,8 @@ node_t *literalTerm(parser_t *parser);
  */
 node_t *atomN(parser_t *parser);
 /**
- * @brief generates the token node, doesn't use parserAdvance, useful when parser_match() is used
+ * @brief generates the token node, doesn't use parserAdvance, useful when
+ * parser_match() is used
  * @param parser
  * @return atomNode
  */
