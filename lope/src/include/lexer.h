@@ -5,13 +5,13 @@
 
 typedef struct LEXER_STRUCT
 {
-    //character - current character
+    // character - current character
     char c;
-    //curent position - file contents
+    // curent position - file contents
     unsigned int i;
     unsigned int l;
     unsigned int lc;
-    //contents - file contents
+    // contents - file contents
     char *contents;
 
 } lexer_t;
@@ -35,10 +35,10 @@ token_t *lexer_collect_string(lexer_t *lexer);
 token_t *lexer_collect_id(lexer_t *lexer);
 
 // defining how to parse numbers
-token_t* lexer_collect_number(lexer_t *lexer);
+token_t *lexer_collect_number(lexer_t *lexer);
 
 // helper method for getting two-character operators
-char* lexer_get_operator_ext_as_string(lexer_t *lexer);
+char *lexer_get_operator_ext_as_string(lexer_t *lexer);
 
 // helper method to call lexer advance lexer and return the token.
 //  takes in instance of token and lexer

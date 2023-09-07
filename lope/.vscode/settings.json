@@ -1,32 +1,8 @@
 {
-    "files.associations": {
-        "*.ejs": "html",
-        "*.COBOL*": "cobol",
-        "*.COB*": "cobol",
-        "*.COBCOPY*": "cobol",
-        "*.COPYBOOK*": "cobol",
-        "*.COPY*": "cobol",
-        "*.PL1*": "pl1",
-        "*.PLI*": "pl1",
-        "*.INC*": "pl1",
-        "*.INCLUDE*": "pl1",
-        "*.JCL*": "jcl",
-        "*.ASM*": "hlasm",
-        "*.ASSEMBLE*": "hlasm",
-        "*.HLASM*": "hlasm",
-        "*.HLA*": "hlasm",
-        "*.MACLIB*": "hlasm",
-        "*.EXEC*": "rexx",
-        "*.REXX*": "rexx",
-        "*.REXXINC*": "rexx",
-        "*.copyasm": "hlasm",
-        "*.macasm": "hlasm",
-        "*.bms": "hlasm",
-        "*.rex": "rexx",
-        "*.rexx": "rexx",
-        "*.java": "javascript",
-        "string.h": "c",
-        "lexer.h": "c",
-        "addfile.h": "c"
-    }
+  "files.associations": {
+    "parser.h": "c",
+    "type_traits": "c",
+    "cmath": "c",
+    "*.tcc": "c"
+  }
 }
